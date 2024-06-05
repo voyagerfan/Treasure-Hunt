@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">TreasureHunt</string>
+    <string name="PermissionScreen">PermissionScreen</string>
+    <string name="StartScreen">StartScreen</string>
+    <string name="DetailScreen">DetailScreen</string>
+
+
+    <string name="cluetext1">Once a year, a fast motorcycle can be found competing on public roads in what is wildy regarded as the most dangerous race in the world. Where is this motorcycle?</string>
+    <string name="cluehint1">The event is held on an island in the Irish sea</string>
+    <string name="ClueDetail1">The Isle of Man TT (Tourist Trophy) race has been held annually on the Isle of Man since 1907. It is a 38mile long course with 219 turns with top speeds reaching 200mph</string>
+
+    <string name="cluetext2">This rock-hewn church and UNESCO site was built around the 12th century and was of great spiritual importance then and even today. There are 10 more close by. Where is this church?</string>
+    <string name="cluehint2">The oldest human remains known to man share the same country with this church.</string>
+    <string name="ClueDetail2">The church of St George is 1 of 11 in the ciy of Lalibela, Ethiopia. It is renowned its architecture and regarded as the most well preserved out all the churches</string>
+
+    <string name="rule1">Rule1</string>
+    <string name="rule1_text">This is a timed game. Pressing "START" initiates the timer and it will continue running as you solve clues.</string>
+
+    <string name="rule2">Rule2</string>
+    <string name="rule2_text">To solve each clue, you must be within 0.2km (200meters) of the Clue location.</string>
+
+    <string name="rule3">Rule3</string>
+    <string name="rule3_text">Once you think you have found a location, press "FOUND IT". The timer will pause and your phone location will be calculated</string>
+
+    <string name="rule4">Rule4</string>
+    <string name="rule4_text">If you are NOT within 0.2km, you will receive a notification and be redirected to try and solve the clue again</string>
+
+    <string name="rule5">Rule5</string>
+    <string name="rule5_text">If you are within 0.2km, the clue is considered solved and only then will you be able to move onto the next clue</string>
+
+    <string name="rule6">Rule6</string>
+    <string name="rule6_text">A hint is provided for each clue. By clicking the "HINT" button you may present or hide the hint at your discretion</string>
+
+    <string name="rule7">Rule7</string>
+    <string name="rule7_text">A hint is provided for each clue. By clicking the "HINT" button you may present or hide the view at your discretion</string>
+
+    <string name="rule8">Rule8</string>
+    <string name="rule8_text">After solving each clue, you will be receive a fun fact about the location. Solving the final clue will end the game</string>
+
+    <string name="rule9">Rule9</string>
+    <string name="rule9_text">You may press quit at the Clue Screen if you wish to stop or simply close the app.</string>
+
+    <string name="LoadingScreen">LoadingScreen\n</string>
+    <string name="ClueSolved">ClueSolved</string>
+    <string name="CompletedScreen">CompletedScreen</string>
+    <string name="TotalTime">Final Elapsed Time = </string>
+    <string name="AppTitle">Treasure Hunt</string>
+    <string name="Start">Start</string>
+    <string name="Continue">Continue</string>
+    <string name="ContinueInstruction">Click Continue for the next Clue</string>
+    <string name="NeedHint">Need a hint? Click the Hint button below</string>
+    <string name="FoundIt">"FOUND IT!!</string>
+    <string name="HintPrefix">"Hint: "</string>
+    <string name="Hint">HINT</string>
+    <string name="HideHint"> Hide HINT</string>
+    <string name="CluePrefix">"Clue: "</string>
+
+
+</resources>
