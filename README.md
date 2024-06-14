@@ -3,8 +3,6 @@ Welcome to my mobile application!
 
 ## Table of Contents
 
-- [Treasure-Hunt](#treasure-hunt)
-  - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [App File Structure](#app-file-structure)
   - [Features](#features)
