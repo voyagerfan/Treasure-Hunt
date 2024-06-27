@@ -3,6 +3,8 @@ Welcome to my mobile application!
 
 ## Table of Contents
 
+- [Treasure-Hunt](#treasure-hunt)
+  - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [App File Structure](#app-file-structure)
   - [Features](#features)
@@ -77,9 +79,13 @@ Once you have downloaded and installed Android Studio:
 * Go to **File** > **Open**
 * Select the project folder
 * The project will open once the import is complete
+
+
+> [!IMPORTANT]
+> The correct locations for each clue are hard coded in datasource.kt. To advance through the application, the emulator location must be manually configured before each location check. Please refer to the discussion [HERE](https://stackoverflow.com/questions/47528006/how-to-set-the-location-manually-in-android-studio-emulator) to achieve this.
+
 * Press the Run icon in the top right corner of the IDE
-
-
+* After succesfull completion of the first clue, make sure to change the emulator location for the next clue.
 
 
 
