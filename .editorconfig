@@ -3,5 +3,6 @@ root = true
 [*.{kt,kts}]
 ij_kotlin_allow_trailing_comma_on_call_site = false
 ij_kotlin_allow_trailing_comma = false
-ij_any_keep_multiple_expressions_in_one_line = unset
-ktlint_standard_multiline-expression-wrapping =
+ij_any_keep_multiple_expressions_in_one_line = true
+ktlint_standard_multiline-expression-wrapping = disabled
+ktlint_standard_function-naming = disabled

@@ -18,7 +18,6 @@ DataSource object to start all of the data
  */
 
 object DataSource {
-
     val clue1 = Clue(
         clueText = R.string.cluetext1,
         clueHint = R.string.cluehint1,
@@ -49,18 +48,16 @@ object DataSource {
         )
     }
 
-    //Isle of man Grand Stand
+    // Isle of man Grand Stand
+
     val geo1 = Geo(
         dLat = 54.1672,
         dLon = -4.4780
     )
     // Lalibela, church of St George
+
     val geo2 = Geo(
-        dLat = 	12.0317,
+        dLat = 12.0317,
         dLon = 39.0411
     )
-
-
-
 }
-

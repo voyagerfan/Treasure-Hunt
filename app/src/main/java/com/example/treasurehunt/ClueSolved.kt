@@ -4,16 +4,12 @@ ClueSolved.kt
 Lamar Petty
 OSU
 CS 492
- */
 
-/*
  * Citation:
  * https://discuss.kotlinlang.org/t/format-a-double-to-fixed-decimal-length/20074
  */
 
 package com.example.treasurehunt
-
-
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -41,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.data.TreasureUiState
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClueSolvedScreen(
@@ -49,7 +44,7 @@ fun ClueSolvedScreen(
     timerValue: Int,
     distance: Double,
     treasureUiState: TreasureUiState
-){
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,29 +53,29 @@ fun ClueSolvedScreen(
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                )
             )
         },
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "BY LP",
+                    text = "BY LP"
                 )
             }
         }
-    ){innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             // add the painter resource
             val image = painterResource(treasureUiState.currentClue.picture)
             // Truncate the double to 3 decimals
@@ -88,7 +83,8 @@ fun ClueSolvedScreen(
 
             Text(
                 text = "Great Job!\n\n You are $truncDist km from the destination",
-                textAlign = TextAlign.Center)
+                textAlign = TextAlign.Center
+            )
 
             Text(
                 text = stringResource(R.string.ContinueInstruction),
@@ -116,7 +112,6 @@ fun ClueSolvedScreen(
                         .background(Color.Blue)
                 )
             }
-
         }
     }
 }

@@ -34,11 +34,11 @@ import com.example.treasurehunt.data.TreasureUiState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClueScreen(
-    onFoundItClick: ()-> Unit,
-    onHintClick: ()->Unit,
+    onFoundItClick: () -> Unit,
+    onHintClick: () -> Unit,
     treasureUIstate: TreasureUiState,
     timerValue: Int,
-    onQuitClick: ()->Unit,
+    onQuitClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -48,19 +48,19 @@ fun ClueScreen(
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                )
             )
         },
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "BY LP",
+                    text = "BY LP"
                 )
             }
         }
@@ -72,7 +72,7 @@ fun ClueScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText),
+                text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText)
             )
             Text(
                 text = stringResource(R.string.NeedHint)
@@ -81,14 +81,14 @@ fun ClueScreen(
                 onClick = onHintClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                if(!treasureUIstate.showHint) {
+                if (!treasureUIstate.showHint) {
                     Text(stringResource(R.string.Hint))
-                }else{
+                } else {
                     Text(stringResource(R.string.HideHint))
                 }
             }
             // if the UI state property showHint == True, show the hint
-            if(treasureUIstate.showHint){
+            if (treasureUIstate.showHint) {
                 Text(
                     text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint)
                 )
@@ -103,20 +103,15 @@ fun ClueScreen(
             TimerScreen(timerValue = timerValue)
 
             Spacer(modifier = Modifier.height(200.dp))
-            
             Button(
                 onClick = onQuitClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Quit")
             }
-
-
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable
@@ -126,6 +121,6 @@ fun previewClueScreen() {
         onHintClick = {},
         treasureUIstate = TreasureUiState(),
         timerValue = 0,
-        onQuitClick = {},
+        onQuitClick = {}
     )
 }

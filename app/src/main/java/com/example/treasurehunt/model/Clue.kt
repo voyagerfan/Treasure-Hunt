@@ -21,4 +21,4 @@ data class Clue(
     @StringRes val clueDetail: Int,
     @DrawableRes val picture: Int,
     val clueNumber: Int
-    )
+)

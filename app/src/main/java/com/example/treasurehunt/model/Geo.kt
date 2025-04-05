@@ -15,6 +15,5 @@ package com.example.treasurehunt.model
 
 data class Geo(
     val dLat: Double,
-    val dLon: Double,
-
+    val dLon: Double
 )

@@ -46,7 +46,7 @@ fun StartScreen(onStartClick: () -> Unit) {
                     )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
         }
@@ -77,8 +77,7 @@ fun StartScreen(onStartClick: () -> Unit) {
 @Composable
 fun RuleList(ruleList: List<Rule>) {
     LazyColumn(
-        modifier = Modifier
-            .height(650.dp)
+        modifier = Modifier.height(650.dp)
     ) {
         items(ruleList) { rule ->
             RuleCard(

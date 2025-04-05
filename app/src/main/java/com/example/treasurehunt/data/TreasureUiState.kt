@@ -20,10 +20,5 @@ data class TreasureUiState(
     val showHint: Boolean = false,
     val currentClue: Clue = DataSource.clue1,
     val currentGeo: Geo = DataSource.geo1,
-    val currentLoc: MutableList<Double> = mutableListOf(0.0,0.0)
-
+    val currentLoc: MutableList<Double> = mutableListOf(0.0, 0.0)
 )
-
-/*
-
- */

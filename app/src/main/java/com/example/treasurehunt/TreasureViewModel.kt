@@ -2,9 +2,7 @@
 Lamar Petty
 OSU
 CS 492
- */
 
-/*
 References:
 https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-jetpack-compose-in-android-f7c56952d599
  */
@@ -24,33 +22,33 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TreasureViewModel : ViewModel() {
-    val _uiState = MutableStateFlow(TreasureUiState())
+    private val _uiState = MutableStateFlow(TreasureUiState())
     val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
 
-    //timer variables
-    val _timer = MutableStateFlow(0)
+    // timer variables
+    private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     var timerJob: Job? = null
 
-
-
-    fun testFunc(input: Boolean){
-        _uiState.update{
+    fun testFunc(input: Boolean) {
+        _uiState.update {
             it.copy(
                 isShowingHomePage = false
             )
         }
     }
+
     // toggle the hint button
-    fun hintClicked(){
-        if(!uiState.value.showHint){
-            _uiState.update{
+
+    fun hintClicked() {
+        if (!uiState.value.showHint) {
+            _uiState.update {
                 it.copy(
                     showHint = true
                 )
             }
-        }else{
-            _uiState.update{
+        } else {
+            _uiState.update {
                 it.copy(
                     showHint = false
                 )
@@ -59,8 +57,8 @@ class TreasureViewModel : ViewModel() {
     }
 
     // Update the clue and geo after first clue solved
-    fun updateClueAndGeo(){
-        _uiState.update{
+    fun updateClueAndGeo() {
+        _uiState.update {
             it.copy(
                 currentClue = DataSource.clue2,
                 currentGeo = DataSource.geo2
@@ -68,7 +66,10 @@ class TreasureViewModel : ViewModel() {
         }
     }
 
-    fun updateCurrentLoc(lat: Double, lon: Double){
+    fun updateCurrentLoc(
+        lat: Double,
+        lon: Double
+    ) {
         _uiState.update {
             it.copy(
                 currentLoc = mutableListOf(lat, lon)
@@ -76,7 +77,7 @@ class TreasureViewModel : ViewModel() {
         }
     }
 
-    fun resetCurrentLoc(){
+    fun resetCurrentLoc() {
         _uiState.update {
             it.copy(
                 currentLoc = mutableListOf(0.0, 0.0)
@@ -84,12 +85,9 @@ class TreasureViewModel : ViewModel() {
         }
     }
 
-
-
-
-    /**************
-    Timeer functions
-     **************/
+/**************
+Timer functions
+**************/
     fun startTimer() {
         timerJob?.cancel()
         timerJob = viewModelScope.launch {
@@ -113,5 +111,4 @@ class TreasureViewModel : ViewModel() {
         super.onCleared()
         timerJob?.cancel()
     }
-
 }

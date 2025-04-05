@@ -8,7 +8,6 @@ CS 492
 
 package com.example.treasurehunt
 
-
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateValue
@@ -37,13 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-
 
 /*
  * Citation:
@@ -52,7 +49,7 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoadingScreen(){
+fun LoadingScreen() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -61,19 +58,19 @@ fun LoadingScreen(){
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                )
             )
         },
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "BY LP",
+                    text = "BY LP"
                 )
             }
         }
@@ -85,7 +82,6 @@ fun LoadingScreen(){
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Text(
                 text = "FINDING LOCATION",
                 textAlign = TextAlign.Center
@@ -95,20 +91,15 @@ fun LoadingScreen(){
             Indicator()
         }
     }
-    var context = LocalContext.current
 }
-
-
 
 @Composable
 fun Indicator(
     size: Dp = 300.dp, // indicator size
     sweepAngle: Float = 90f, // angle (lenght) of indicator arc
-    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth, //width of circle and ar lines
+    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth
 ) {
-
-    ////// animation //////
-
+    // ANIMATION
     // docs recomend use transition animation for infinite loops
     // https://developer.android.com/jetpack/compose/animation
     val transition = rememberInfiniteTransition()
@@ -129,8 +120,7 @@ fun Indicator(
         )
     )
 
-    ////// draw /////
-
+    // DRAW
     // define stroke with given width and arc ends type considering device DPI
     val stroke = with(LocalDensity.current) {
         Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Square)
@@ -154,7 +144,7 @@ fun Indicator(
             startAngle = currentArcStartAngle.toFloat() - 90,
             sweepAngle = sweepAngle,
             useCenter = false,
-            style = stroke,
+            style = stroke
         )
     }
 }

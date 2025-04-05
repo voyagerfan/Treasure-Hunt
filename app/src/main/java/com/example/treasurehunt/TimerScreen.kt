@@ -4,14 +4,11 @@ TimerScreen.kt
 Lamar Petty
 OSU
 CS 492
- */
 
-/*
-References
+References:
 https://stackoverflow.com/questions/65637680/kotlin-check-if-a-variable-is-between-two-numbers
 https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-jetpack-compose-in-android-f7c56952d599
- */
-
+*/
 package com.example.treasurehunt
 
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.floor
 
-
 @Composable
-fun TimerScreen(timerValue: Int){
+fun TimerScreen(timerValue: Int) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -37,25 +33,22 @@ fun TimerScreen(timerValue: Int){
     ) {
         Text(text = formatTime(timerValue), fontSize = 24.sp)
         Spacer(modifier = Modifier.height(16.dp))
-
-
     }
 }
 
+fun formatTime(time: Int): String {
+/******
+Calculate the minutes and seconds base on the seconds passed in (time)
+Returns a formatted string of minutes:seconds
 
-fun formatTime(time: Int):String{
-    /******
-    Calculate the minutes and seconds base on the seconds passed in (time)
-    Returns a formatted string of M:S
-     ******/
-    /*
-    cast minutes as a double and feed it "time"
-    Take the floor function to get the actual minutes
-     */
+cast minutes as a double and feed it "time"
+Take the floor function to get the actual minutes
+******/
+
     var minutes: Any = 0.00
     minutes as Double
     minutes = time
-    minutes = floor(minutes/60.0)
+    minutes = floor(minutes / 60.0)
     minutes = minutes.toInt()
 
     /*
@@ -63,14 +56,12 @@ fun formatTime(time: Int):String{
     the 60 second interval has been reached.
      */
     var seconds = time
-    if(time >= 60) {
+    if (time >= 60) {
         seconds = time - (minutes * 60)
     }
-    if(seconds in 0..9){
+    if (seconds in 0..9) {
         return "$minutes : 0$seconds"
-    }else{
+    } else {
         return "$minutes : $seconds"
     }
-
-
 }
