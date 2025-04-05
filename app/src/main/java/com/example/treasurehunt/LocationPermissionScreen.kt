@@ -121,24 +121,27 @@ fun LocationPermissionScreen(
                 ) {
                     if (locationPermissionState.status.isGranted || fineLocationPermissionState.allPermissionsGranted) {
                         if (bgLocationPermissionState.status.shouldShowRationale) {
-                            rationaleState = RationaleState(
-                                "Request background location",
-                                "In order to use this feature please grant access by accepting " + "the background location permission dialog." + "\n\nWould you like to continue?",
-                            ) { proceed ->
-                                if (proceed) {
-                                    bgLocationPermissionState.launchPermissionRequest()
+                            rationaleState =
+                                RationaleState(
+                                    "Request background location",
+                                    "In order to use this feature please grant access by " +
+                                            "accepting the background location permission dialog." +
+                                            "\n\nWould you like to continue?",
+                                    ) { proceed ->
+                                        if (proceed) {
+                                            bgLocationPermissionState.launchPermissionRequest()
+                                        }
+                                    rationaleState = null
                                 }
-                                rationaleState = null
-                            }
                         } else {
                             bgLocationPermissionState.launchPermissionRequest()
                         }
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Please grant either Approximate location access permission or Fine" + "location access permission",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast
+                            .makeText(
+                                context,
+                                "Please grant either Approximate location access permission or Fine" + "location access permission",
+                                Toast.LENGTH_SHORT).show()
                     }
                 }
             }

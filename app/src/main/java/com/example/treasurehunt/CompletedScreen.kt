@@ -42,8 +42,8 @@ fun CompletedScreen(
     treasureUIstate: TreasureUiState,
     distance: Double,
     elapsedTime: Int,
-    onHomeClick: ()->Unit
-){
+    onHomeClick: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,52 +52,48 @@ fun CompletedScreen(
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                )
             )
         },
         bottomBar = {
             BottomAppBar(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
-                contentColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.primary
             ) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = "BY LP",
+                    text = "BY LP"
                 )
             }
         }
-    ){innerPadding ->
+    ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
-        ){
+        ) {
             // add the painter resource
             val image = painterResource(treasureUIstate.currentClue.picture)
             // trucate the double
             var truncDist = String.format("%.3f", distance)
             Text(
                 text = "Awesome Job Completing the Game\n\nYou are $truncDist km from the destination",
-                textAlign = TextAlign.Center)
-
+                textAlign = TextAlign.Center
+            )
             Text(
                 text = stringResource(treasureUIstate.currentClue.clueDetail),
-                textAlign = TextAlign.Center)
-
+                textAlign = TextAlign.Center
+            )
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-            )
-            {
+            ) {
                 Text(
                     text = stringResource(R.string.TotalTime),
                     textAlign = TextAlign.Center
                 )
-
                 TimerScreen(timerValue = elapsedTime)
-
             }
             Box {
                 Image(
@@ -108,7 +104,6 @@ fun CompletedScreen(
                         .background(Color.Blue)
                 )
             }
-
             Button(
                 onClick = onHomeClick,
                 modifier = Modifier
@@ -126,7 +121,12 @@ fun CompletedScreen(
 @Composable
 fun previewCompleted() {
     CompletedScreen(
-        treasureUIstate = TreasureUiState(true, false, DataSource.clue1, DataSource.geo1),
+        treasureUIstate = TreasureUiState(
+            isShowingHomePage = true,
+            showHint = false,
+            currentClue = DataSource.clue1,
+            currentGeo = DataSource.geo1
+        ),
         distance = 0.2,
         elapsedTime = 900,
         onHomeClick = {}

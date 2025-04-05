@@ -36,56 +36,55 @@ import com.example.treasurehunt.model.Rule
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StartScreen(
-    onStartClick: () -> Unit
-){
+fun StartScreen(onStartClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.AppTitle))},
+                    Text(
+                        text = stringResource(R.string.AppTitle)
+                    )
+                },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                ),
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
             )
         }
-    ){innerPadding ->
+    ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
-
-        ){
+        ) {
             RuleList(
-                ruleList = DataSource.loadRules(),
+                ruleList = DataSource.loadRules()
             )
             Button(
                 onClick = onStartClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 2.dp)
-                    .align(Alignment.CenterHorizontally)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 2.dp)
+                        .align(Alignment.CenterHorizontally)
             ) {
-                Text(stringResource(R.string.Start))
+                Text(
+                    stringResource(R.string.Start)
+                )
             }
-
         }
-
-
     }
 }
 
 @Composable
-fun RuleList(ruleList: List<Rule>, modifier: Modifier = Modifier){
-    LazyColumn(modifier = Modifier
-        .height(650.dp)){
-        items(ruleList){ rule ->
+fun RuleList(ruleList: List<Rule>) {
+    LazyColumn(
+        modifier = Modifier
+            .height(650.dp)
+    ) {
+        items(ruleList) { rule ->
             RuleCard(
                 rule = rule,
                 modifier = Modifier.padding(8.dp)
-
             )
-
         }
     }
 }
@@ -94,17 +93,18 @@ fun RuleList(ruleList: List<Rule>, modifier: Modifier = Modifier){
 fun RuleCard(
     rule: Rule,
     modifier: Modifier = Modifier
-){
-    Card(modifier = modifier){
+) {
+    Card(modifier = modifier) {
         Column {
-            Row(){
+            Row {
                 Text(
                     text = stringResource(rule.rule_number),
                     modifier = Modifier.padding(
                         start = 16.dp,
                         top = 16.dp,
                         end = 5.dp,
-                        bottom = 16.dp),
+                        bottom = 16.dp
+                    ),
                     fontWeight = FontWeight.Bold
                 )
 
@@ -114,15 +114,14 @@ fun RuleCard(
                         start = 0.dp,
                         top = 16.dp,
                         end = 16.dp,
-                        bottom = 16.dp),
+                        bottom = 16.dp
+                    ),
                     fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

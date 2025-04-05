@@ -3,8 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-
-
 android {
     namespace = "com.example.treasurehunt"
     compileSdk = 34
@@ -68,9 +66,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:${rootProject.extra["lifecycle_version"]}")
     implementation("androidx.navigation:navigation-compose:2.7.4")
     implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
-    implementation("com.google.android.gms:play-services-location:21.2.0") //add this for accompianiest
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta") // kotlin coroutins
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0-RC2") // for await()
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0-RC2")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -78,8 +76,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-
 }
-
-

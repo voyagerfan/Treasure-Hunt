@@ -57,8 +57,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-
-enum class TreasureHuntScreen(@StringRes val title: Int){
+enum class TreasureHuntScreen(@StringRes val title: Int) {
     PermissionScreen(title = R.string.PermissionScreen),
     StartScreen(title = R.string.StartScreen),
     ClueScreen(title = R.string.DetailScreen),
@@ -73,7 +72,7 @@ enum class TreasureHuntScreen(@StringRes val title: Int){
 fun TreasureHuntApp(
     viewModel: TreasureViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
-){
+) {
     val context = LocalContext.current
 
     // Approximate location access is sufficient for most of use cases
@@ -86,12 +85,12 @@ fun TreasureHuntApp(
     val fineLocationPermissionState = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION,
-        ),
+        )
     )
 
     // In really rare use cases, accessing background location might be needed.
     val bgLocationPermissionState = rememberPermissionState(
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+        Manifest.permission.ACCESS_BACKGROUND_LOCATION
     )
 
     // Keeps track of the rationale dialog state, needed when the user requires further rationale
@@ -118,18 +117,11 @@ fun TreasureHuntApp(
         .setMaxUpdateAgeMillis(0)
         .build()
 
-    var onUpdate = {result: LocationResult -> Unit}
+    var onUpdate = { result: LocationResult -> Unit }
     val currentOnUpdate by rememberUpdatedState(newValue = onUpdate)
     var lifecycleOwner = LocalLifecycleOwner.current
-
-
-
-    var locationInfo by remember {
-        mutableStateOf(mutableListOf(0.0,0.0))
-    }
+    var locationInfo by remember { mutableStateOf(mutableListOf(0.0,0.0)) }
     val scope = rememberCoroutineScope()
-
-
 
     NavHost(
         navController = navController,

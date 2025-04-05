@@ -20,11 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         setContent {
             TreasureHuntTheme {
                 // A surface container using the 'background' color from the theme
@@ -38,8 +35,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
 
 @Preview(showBackground = true)
 @Composable

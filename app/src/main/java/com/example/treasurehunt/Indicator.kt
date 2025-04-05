@@ -138,10 +138,9 @@ fun Indicator(
 
     // draw on canvas
     Canvas(
-        modifier = Modifier
-            //.progressSemantics() // (optional) for Accessibility services
-            .size(size) // canvas size
-            //padding. otherwise, not the whole circle will fit in the canvas
+        modifier =
+            Modifier
+                .size(size) // canvas size
     ) {
         // draw "background" (gray) circle with defined stroke.
         // without explicit center and radius it fit canvas bounds
@@ -158,7 +157,6 @@ fun Indicator(
             style = stroke,
         )
     }
-
 }
 
 @Preview(showBackground = true)
