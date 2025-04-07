@@ -20,6 +20,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Looper
 import android.widget.Button
+import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -33,6 +34,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -107,7 +109,14 @@ fun TreasureHuntApp(
     // Collect the timer state.
     val timerValue by viewModel.timer.collectAsState()
 
-    val activity = context as Activity
+    val activity = context as ComponentActivity // changed from Activity
+
+
+    activity.requestPermissions(
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+        1)
+
+
 
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(activity)
@@ -123,7 +132,6 @@ fun TreasureHuntApp(
     var onUpdate = { result: LocationResult -> Unit }
     val currentOnUpdate by rememberUpdatedState(newValue = onUpdate)
     var lifecycleOwner = LocalLifecycleOwner.current
-    var locationInfo by remember { mutableStateOf(mutableListOf(0.0, 0.0)) }
     val scope = rememberCoroutineScope()
 
     NavHost(

@@ -9,10 +9,15 @@ https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-je
 
 package com.example.treasurehunt
 
+import android.Manifest
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
+import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,25 +25,61 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TreasureViewModel : ViewModel() {
+@HiltViewModel
+class TreasureViewModel @Inject constructor(
+    @ApplicationContext private val applicationContext: Context
+): ViewModel() {
+
+    private var packageManager = applicationContext.packageManager
+    private val packageName = applicationContext.packageName
+
+    private val _permissions = MutableStateFlow(PermissionUiState())
+    val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
+
     private val _uiState = MutableStateFlow(TreasureUiState())
     val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
 
-    // timer variables
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
-    var timerJob: Job? = null
+    private var timerJob: Job? = null
 
-    fun testFunc(input: Boolean) {
-        _uiState.update {
+    init {
+        checkAndUpdatePermissions()
+    }
+
+    private fun checkAndUpdatePermissions() {
+        /**
+         * Checks the permissions for Coarse and Fine location access
+         * and updates the backing property [_permissions] accordingly
+         *
+         * This function queries the [packageManager] to check if access
+         * has been granted for ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION.
+         * The results are then used to update [PermissionUiState] held by the
+         * [_permissions] MutableStateFLow
+         *
+         * Note: This function does not request permissions from the user. It only
+         * checks the current status
+         */
+        _permissions.update {
+            it.copy(isCoarseAccessGranted = packageManager
+                .checkPermission(
+                    packageName,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+        _permissions.update {
             it.copy(
-                isShowingHomePage = false
+                isFineAccessGranted = packageManager
+                    .checkPermission(
+                        packageName,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
             )
         }
     }
-
-    // toggle the hint button
 
     fun hintClicked() {
         if (!uiState.value.showHint) {
@@ -112,3 +153,36 @@ Timer functions
         timerJob?.cancel()
     }
 }
+
+/*
+
+    val packageManager = applicationContext.packageManager
+
+
+    private val _permissions = MutableStateFlow(PermissionUiState())
+    val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
+
+    init {
+
+        checkAndUpdatePermissions()
+    }
+    private fun checkAndUpdatePermissions() {
+        _permissions.update {
+            it.copy(isCoarseAccessGranted = ContextCompat
+                .checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+        _permissions.update {
+            it.copy(
+                isFineAccessGranted = ContextCompat
+                    .checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+            )
+        }
+    }
+ */
