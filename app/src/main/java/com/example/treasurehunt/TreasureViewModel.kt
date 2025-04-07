@@ -9,7 +9,6 @@ https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-je
 
 package com.example.treasurehunt
 
-import android.Manifest
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -33,7 +32,7 @@ class TreasureViewModel @Inject constructor(
 ): ViewModel() {
 
     private var packageManager = applicationContext.packageManager
-    private val packageName = applicationContext.packageName
+    val packageName: String = applicationContext.packageName
 
     private val _permissions = MutableStateFlow(PermissionUiState())
     val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
@@ -45,39 +44,22 @@ class TreasureViewModel @Inject constructor(
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
-    init {
-        checkAndUpdatePermissions()
-    }
-
-    private fun checkAndUpdatePermissions() {
-        /**
-         * Checks the permissions for Coarse and Fine location access
-         * and updates the backing property [_permissions] accordingly
-         *
-         * This function queries the [packageManager] to check if access
-         * has been granted for ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION.
-         * The results are then used to update [PermissionUiState] held by the
-         * [_permissions] MutableStateFLow
-         *
-         * Note: This function does not request permissions from the user. It only
-         * checks the current status
-         */
+    // TODO("Update KDOC, create separate states for precise and approximate)
+    /**
+     * Checks the permissions for Coarse and Fine location access
+     * and updates the backing property [_permissions] accordingly
+     *
+     * This function queries the [packageManager] to check if access
+     * has been granted for ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION.
+     * The results are then used to update [PermissionUiState] held by the
+     * [_permissions] MutableStateFLow
+     *
+     * Note: This function does not request permissions from the user. It only
+     * checks the current status
+     */
+    internal fun updatePermissionState(isGranted: Boolean) {
         _permissions.update {
-            it.copy(isCoarseAccessGranted = packageManager
-                .checkPermission(
-                    packageName,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
-        _permissions.update {
-            it.copy(
-                isFineAccessGranted = packageManager
-                    .checkPermission(
-                        packageName,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-            )
+            it.copy(isFineAccessGranted = isGranted)
         }
     }
 

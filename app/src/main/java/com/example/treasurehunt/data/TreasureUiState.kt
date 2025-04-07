@@ -27,8 +27,8 @@ data class TreasureUiState(
 )
 
 data class PermissionUiState(
-    val isFineAccessGranted: Int = -1,
-    val isCoarseAccessGranted: Int = -1
+    val isFineAccessGranted: Boolean = false,
+    val isCoarseAccessGranted: Boolean = false
 )
 
 
