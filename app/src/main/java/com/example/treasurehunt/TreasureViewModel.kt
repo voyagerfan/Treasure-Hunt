@@ -22,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -44,24 +45,43 @@ class TreasureViewModel @Inject constructor(
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
-    // TODO("Update KDOC, create separate states for precise and approximate)
     /**
-     * Checks the permissions for Coarse and Fine location access
-     * and updates the backing property [_permissions] accordingly
+     * Updates the backing property [_permissions] for the `isFineAccessGranted` based on the
+     * value of [isGranted]
      *
-     * This function queries the [packageManager] to check if access
-     * has been granted for ACCESS_COARSE_LOCATION and ACCESS_FINE_LOCATION.
-     * The results are then used to update [PermissionUiState] held by the
-     * [_permissions] MutableStateFLow
-     *
-     * Note: This function does not request permissions from the user. It only
-     * checks the current status
+     * @param [isGranted] A boolean value representing whether the fine access permission has been
+     * granted.
      */
-    internal fun updatePermissionState(isGranted: Boolean) {
+    internal fun updateFinePermissionState(isGranted: Boolean) {
         _permissions.update {
             it.copy(isFineAccessGranted = isGranted)
         }
     }
+    /**
+     * Updates the backing property [_permissions] for the `isCoarseAccessGranted` property based on
+     * the value of [isGranted]
+     *
+     * @param [isGranted] A boolean value representing whether the fine access permission has been
+     * granted.
+     */
+    internal fun updateCoarsePermissionState(isGranted: Boolean) {
+        _permissions.update {
+            it.copy(isCoarseAccessGranted = isGranted)
+        }
+    }
+
+    internal fun updatePermissionRationaleState(shouldShow: Boolean) {
+        _permissions.update {
+            it.copy(showPermissionRationale = shouldShow)
+        }
+    }
+    internal fun updatePermissionDenialCount() {
+        _permissions.update {
+            it.copy(permissionDenialCount =
+                uiStatePermissions.value.permissionDenialCount + 1)
+        }
+    }
+
 
     fun hintClicked() {
         if (!uiState.value.showHint) {

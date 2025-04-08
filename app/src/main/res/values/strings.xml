@@ -55,5 +55,12 @@
     <string name="HideHint"> Hide HINT</string>
     <string name="CluePrefix">"Clue: "</string>
 
+    <string name="alert_dialog_title">Location Access Required</string>
+    <string name="alert_dialog_text">
+    This app requires access to your location to function properly.
+    Selecting "Precise" will give you the most accurate location results.
+    Selecting "Approximate" provides a less accurate location, but you can still enjoy the app.
+    Click "Confirm" to make your choice, or "Dismiss" to exit. </string>
+
 
 </resources>

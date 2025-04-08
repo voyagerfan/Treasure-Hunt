@@ -28,8 +28,12 @@ data class TreasureUiState(
 
 data class PermissionUiState(
     val isFineAccessGranted: Boolean = false,
-    val isCoarseAccessGranted: Boolean = false
+    val isCoarseAccessGranted: Boolean = false,
+    val showPermissionRationale: Boolean = false,
+    val permissionDenialCount: Int = 0
 )
+
+
 
 
 

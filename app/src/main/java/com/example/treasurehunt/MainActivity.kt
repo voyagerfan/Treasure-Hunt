@@ -14,7 +14,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.annotation.OptIn
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,14 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
-import androidx.media3.common.util.Log
-import androidx.media3.common.util.UnstableApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,9 +34,10 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkAndUpdateFinePermission()
+        checkAndUpdateCoarsePermission()
         setContent {
             TreasureHuntTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -56,7 +53,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    @OptIn(UnstableApi::class) // TODO("Remove once logging is done")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -64,19 +60,36 @@ class MainActivity : ComponentActivity() {
         deviceId: Int
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults, deviceId)
-        if (requestCode == 1) {
-            Log.d("Permissions", "Grant Results: ${grantResults.joinToString(", ")}")
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                viewModel.updatePermissionState(isGranted = true)
+        if (requestCode == 1 && grantResults.isNotEmpty()) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                viewModel.updateFinePermissionState(isGranted = true)
+                viewModel.updateCoarsePermissionState(isGranted = true)
+            } else if (grantResults[0] == PackageManager.PERMISSION_DENIED &&
+                grantResults[1] == PackageManager.PERMISSION_GRANTED
+            ) {
+                viewModel.updateCoarsePermissionState(isGranted = true)
+            } else if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                viewModel.updatePermissionRationaleState(shouldShow = true)
+                viewModel.updatePermissionDenialCount()
+            } else {
+                viewModel.updatePermissionDenialCount()
             }
-        } // TODO("Handle if user chooses approximate")
-        val isApproximate = ActivityCompat.checkSelfPermission(
-            applicationContext,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        )
-        Log.d("Approximate", "$isApproximate")
+        }
+    }
 
-        // TODO("Handle if user doesnt allow location access")
+    private fun checkAndUpdateFinePermission() {
+        val isFineGranted = ActivityCompat.checkSelfPermission(
+            applicationContext,
+            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        viewModel.updateFinePermissionState(isGranted = isFineGranted)
+    }
+
+    private fun checkAndUpdateCoarsePermission() {
+        val isCoarseGranted = ActivityCompat.checkSelfPermission(
+            applicationContext,
+            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        viewModel.updateCoarsePermissionState(isGranted = isCoarseGranted)
     }
 }
 

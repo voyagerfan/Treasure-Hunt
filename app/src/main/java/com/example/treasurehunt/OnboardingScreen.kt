@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import com.example.treasurehunt.data.rationale
 
 @Composable
 fun OnboardingScreen(
@@ -23,9 +24,6 @@ fun OnboardingScreen(
     val uiState by viewModel.uiStatePermissions.collectAsState()
     val context = LocalContext.current
     val activity = context as ComponentActivity
-    val currentPermissionStatus = activity.checkSelfPermission(
-        Manifest.permission.ACCESS_FINE_LOCATION
-    )
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -49,11 +47,25 @@ fun OnboardingScreen(
             fontSize = 20.sp
         )
 
-        if (currentPermissionStatus == -1) {
-            activity.requestPermissions(
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                1
-            )
+        Text(
+            text = "Denial Count stands at = ${uiState.permissionDenialCount}"
+        )
+        if (uiState.permissionDenialCount < 2) {
+            if (!uiState.isFineAccessGranted && !uiState.isCoarseAccessGranted && !uiState.showPermissionRationale) {
+                activity.requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ), 1
+                )
+            }
+            if (uiState.showPermissionRationale && !uiState.isFineAccessGranted && !uiState.isCoarseAccessGranted) {
+                PermissionAlertDialogBox(
+                    onDismissRequest = {viewModel.updatePermissionRationaleState(shouldShow = false)},
+                    onConfirmation = {viewModel.updatePermissionRationaleState(shouldShow = false)},
+                    rationale = rationale
+                )
+            }
         }
     }
 }
