@@ -60,16 +60,7 @@ fun RuleScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            /* TODO: Re-route when more pages made */
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.baseline_menu_24),
-                            contentDescription = "arrow"
-                        )
-                    }
+                    MenuDropdown()
                 }
             )
         },
