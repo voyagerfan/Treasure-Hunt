@@ -151,36 +151,3 @@ Timer functions
         timerJob?.cancel()
     }
 }
-
-/*
-
-    val packageManager = applicationContext.packageManager
-
-
-    private val _permissions = MutableStateFlow(PermissionUiState())
-    val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
-
-    init {
-
-        checkAndUpdatePermissions()
-    }
-    private fun checkAndUpdatePermissions() {
-        _permissions.update {
-            it.copy(isCoarseAccessGranted = ContextCompat
-                .checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            )
-        }
-        _permissions.update {
-            it.copy(
-                isFineAccessGranted = ContextCompat
-                    .checkSelfPermission(
-                        applicationContext,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-            )
-        }
-    }
- */
