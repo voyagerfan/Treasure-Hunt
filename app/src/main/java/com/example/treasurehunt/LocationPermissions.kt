@@ -7,10 +7,11 @@ CS492
  */
 
 /*
+TODO: to remove this page in a downstream iteration
 Citation:
 https://github.com/android/platform-samples/blob/main/samples/location/src/main/java/com/example/platform/location/permission/LocationPermissions.kt
  */
-// TODO("to remove this page in a downstream iteration")
+
 package com.example.treasurehunt
 
 import androidx.compose.foundation.background

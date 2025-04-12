@@ -30,7 +30,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val viewModel: TreasureViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +75,9 @@ class MainActivity : ComponentActivity() {
             ) {
                 viewModel.updateCoarsePermissionState(isGranted = true)
             } else if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )) {
                 viewModel.updatePermissionRationaleState(shouldShow = true)
                 viewModel.updatePermissionDenialCount()
             } else {

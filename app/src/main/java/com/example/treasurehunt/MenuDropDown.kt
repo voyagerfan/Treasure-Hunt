@@ -1,15 +1,6 @@
 package com.example.treasurehunt
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -30,8 +21,7 @@ import com.example.treasurehunt.ui.theme.catamaranFamily
 
 @Composable
 fun MenuDropdown() {
-
-    var expanded by remember {  mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
     IconButton(
         onClick = {
             expanded = true
@@ -47,7 +37,7 @@ fun MenuDropdown() {
         expanded = expanded,
         onDismissRequest = { expanded = false }
     ) {
-        DropdownMenuItem (
+        DropdownMenuItem(
             onClick = { /* TODO: add route */ expanded = false },
             text = {
                 Text(
@@ -55,7 +45,7 @@ fun MenuDropdown() {
                     text = "Login",
                     fontFamily = catamaranFamily,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             },
             leadingIcon = {
@@ -63,10 +53,10 @@ fun MenuDropdown() {
                     painter = painterResource(R.drawable.baseline_login_24),
                     contentDescription = "Login Icon"
                 )
-            },
+            }
         )
 
-        DropdownMenuItem (
+        DropdownMenuItem(
             onClick = { /* TODO: add route */ expanded = false },
             text = {
                 Text(
@@ -74,7 +64,7 @@ fun MenuDropdown() {
                     text = "Dashboard",
                     fontFamily = catamaranFamily,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             },
             leadingIcon = {
@@ -82,10 +72,10 @@ fun MenuDropdown() {
                     painter = painterResource(R.drawable.baseline_dashboard_24),
                     contentDescription = "Dashboard Icon"
                 )
-            },
+            }
         )
 
-        DropdownMenuItem (
+        DropdownMenuItem(
             onClick = { /* TODO: add route */ expanded = false },
             text = {
                 Text(
@@ -93,7 +83,7 @@ fun MenuDropdown() {
                     text = "Settings",
                     fontFamily = catamaranFamily,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             },
             leadingIcon = {
@@ -101,10 +91,10 @@ fun MenuDropdown() {
                     painter = painterResource(R.drawable.baseline_settings_24),
                     contentDescription = "Setting Icon"
                 )
-            },
+            }
         )
 
-        DropdownMenuItem (
+        DropdownMenuItem(
             onClick = { /* TODO: add route */ expanded = false },
             text = {
                 Text(
@@ -112,7 +102,7 @@ fun MenuDropdown() {
                     text = "Logout",
                     fontFamily = catamaranFamily,
                     fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Bold
                 )
             },
             leadingIcon = {
@@ -120,7 +110,7 @@ fun MenuDropdown() {
                     painter = painterResource(R.drawable.baseline_logout_24),
                     contentDescription = "Logout Icon"
                 )
-            },
+            }
         )
     }
 }

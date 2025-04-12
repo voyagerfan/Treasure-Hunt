@@ -22,7 +22,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -54,6 +53,7 @@ class TreasureViewModel @Inject constructor(
             it.copy(isFineAccessGranted = isGranted)
         }
     }
+
     /**
      * Updates the backing property [_permissions] for the `isCoarseAccessGranted` property based on
      * the value of [isGranted]
@@ -72,10 +72,12 @@ class TreasureViewModel @Inject constructor(
             it.copy(showPermissionRationale = shouldShow)
         }
     }
+
     internal fun updatePermissionDenialCount() {
         _permissions.update {
-            it.copy(permissionDenialCount =
-                uiStatePermissions.value.permissionDenialCount + 1)
+            it.copy(
+                permissionDenialCount = uiStatePermissions.value.permissionDenialCount + 1
+            )
         }
     }
 

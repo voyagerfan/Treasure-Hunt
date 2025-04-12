@@ -15,9 +15,7 @@ fun PermissionAlertDialogBox(
     rationale: PermissionRationale
 ) {
     AlertDialog(
-        icon = {
-
-        },
+        icon = { /* TODO: Add an appropriate icon */ },
         title = {
             Text(text = stringResource(rationale.title))
         },
@@ -25,13 +23,11 @@ fun PermissionAlertDialogBox(
             Text(text = stringResource(rationale.text))
         },
         onDismissRequest = {
-
+            /* TODO: to implement */
         },
         confirmButton = {
             TextButton(
-                onClick = {
-                    onConfirmation()
-                }
+                onClick = { onConfirmation() }
             ) {
                 Text("Confirm")
             }

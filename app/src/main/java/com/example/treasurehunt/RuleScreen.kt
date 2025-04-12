@@ -29,16 +29,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.DataSource
-import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.model.Rule
 import com.example.treasurehunt.ui.theme.catamaranFamily
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RuleScreen(
-    navController: NavController
-) {
+fun RuleScreen(navController: NavController) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -71,7 +67,7 @@ fun RuleScreen(
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = {/*TODO: Add next route here*/},
+                        onClick = { /*TODO: Add next route here*/ },
                         modifier =
                             Modifier
                                 .fillMaxWidth()
@@ -111,21 +107,17 @@ fun ScrollableRuleList(ruleList: List<Rule>) {
 }
 
 @Composable
-fun RuleItem(
-    rule: Rule,
-) {
+fun RuleItem(rule: Rule) {
     Card(
         modifier = Modifier
             .padding(8.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
             Text(
                 text = stringResource(rule.rule_number),
@@ -142,7 +134,6 @@ fun RuleItem(
                 fontFamily = catamaranFamily,
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center
-
             )
         }
     }

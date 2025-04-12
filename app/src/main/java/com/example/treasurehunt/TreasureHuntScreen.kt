@@ -15,7 +15,6 @@ package com.example.treasurehunt
 import ClueScreen
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Looper
@@ -34,7 +33,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -111,12 +109,9 @@ fun TreasureHuntApp(
 
     val activity = context as ComponentActivity // changed from Activity
 
-
     activity.requestPermissions(
         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
         1)
-
-
 
     val locationClient = remember {
         LocationServices.getFusedLocationProviderClient(activity)

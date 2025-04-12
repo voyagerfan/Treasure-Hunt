@@ -9,7 +9,6 @@ CS492
 package com.example.treasurehunt.data
 
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
 import com.example.treasurehunt.R
 import com.example.treasurehunt.model.Clue
 import com.example.treasurehunt.model.Geo
@@ -66,11 +65,10 @@ object DataSource {
 
 data class PermissionRationale(
     @StringRes val title: Int,
-    @StringRes val text: Int,
+    @StringRes val text: Int
 )
 
 val rationale = PermissionRationale(
     title = R.string.alert_dialog_title,
     text = R.string.alert_dialog_text
 )
-

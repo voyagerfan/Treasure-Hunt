@@ -45,5 +45,5 @@ val catamaranFamily = FontFamily(
     Font(R.font.catamaran_bold),
     Font(R.font.catamaran_semi_bold),
     Font(R.font.catamaran_extra_bold),
-    Font(R.font.catamaran_variable_font_wght),
+    Font(R.font.catamaran_variable_font_wght)
 )

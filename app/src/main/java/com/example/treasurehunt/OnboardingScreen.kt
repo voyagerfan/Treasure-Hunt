@@ -34,7 +34,6 @@ fun OnboardingScreen(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-
     ) {
         Text(
             text = "Hello from TreasureHunt",
@@ -49,7 +48,8 @@ fun OnboardingScreen(
                             arrayOf(
                                 Manifest.permission.ACCESS_FINE_LOCATION,
                                 Manifest.permission.ACCESS_COARSE_LOCATION
-                            ), 1
+                            ),
+                            1
                         )
                     }
                 ) {
@@ -58,8 +58,8 @@ fun OnboardingScreen(
             }
             if (uiState.showPermissionRationale) {
                 PermissionAlertDialogBox(
-                    onDismissRequest = {viewModel.updatePermissionRationaleState(shouldShow = false)},
-                    onConfirmation = {viewModel.updatePermissionRationaleState(shouldShow = false)},
+                    onDismissRequest = { viewModel.updatePermissionRationaleState(shouldShow = false) },
+                    onConfirmation = { viewModel.updatePermissionRationaleState(shouldShow = false) },
                     rationale = rationale
                 )
             }
