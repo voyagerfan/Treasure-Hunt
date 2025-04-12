@@ -32,9 +32,6 @@ class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context
 ): ViewModel() {
 
-    private var packageManager = applicationContext.packageManager
-    val packageName: String = applicationContext.packageName
-
     private val _permissions = MutableStateFlow(PermissionUiState())
     val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
 
@@ -81,7 +78,6 @@ class TreasureViewModel @Inject constructor(
                 uiStatePermissions.value.permissionDenialCount + 1)
         }
     }
-
 
     fun hintClicked() {
         if (!uiState.value.showHint) {

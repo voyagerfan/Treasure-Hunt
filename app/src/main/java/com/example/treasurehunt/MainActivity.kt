@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,9 +44,15 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "OnboardingScreen") {
-                        composable("OnboardingScreen") {
-                            OnboardingScreen(viewModel = viewModel)
+                    NavHost(navController = navController, startDestination = ScreenList.ONBOARDING.name) {
+                        composable(route = ScreenList.ONBOARDING.name) {
+                            OnboardingScreen(
+                                viewModel = viewModel,
+                                navController = navController
+                            )
+                        }
+                        composable(route = ScreenList.RULE_SCREEN.name) {
+                            RuleScreen(navController = navController)
                         }
                     }
                 }
