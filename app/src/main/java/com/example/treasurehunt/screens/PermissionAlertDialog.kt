@@ -1,4 +1,4 @@
-package com.example.treasurehunt
+package com.example.treasurehunt.screens
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

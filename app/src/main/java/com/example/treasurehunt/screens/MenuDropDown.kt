@@ -1,4 +1,4 @@
-package com.example.treasurehunt
+package com.example.treasurehunt.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu
@@ -17,15 +17,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.treasurehunt.R
 import com.example.treasurehunt.ui.theme.catamaranFamily
 
 @Composable
 fun MenuDropdown() {
     var expanded by remember { mutableStateOf(false) }
-    IconButton(
-        onClick = {
-            expanded = true
-        }
+    IconButton(onClick = { expanded = true }
     ) {
         Icon(
             painter = painterResource(R.drawable.baseline_menu_24),

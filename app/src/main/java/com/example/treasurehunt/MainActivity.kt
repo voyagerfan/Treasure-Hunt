@@ -18,13 +18,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.screens.OnboardingScreen
+import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,6 +39,7 @@ class MainActivity : ComponentActivity() {
     private val viewModel: TreasureViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         checkAndUpdateFinePermission()
         checkAndUpdateCoarsePermission()
