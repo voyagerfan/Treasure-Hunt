@@ -1,8 +1,10 @@
 package com.example.treasurehunt.screens
 
+import android.text.style.AlignmentSpan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -69,8 +71,7 @@ fun HomeScreen(navController: NavController){
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
@@ -79,6 +80,7 @@ fun HomeScreen(navController: NavController){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .wrapContentWidth()
+                                .align(Alignment.CenterStart)
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.baseline_explore_24),
@@ -96,6 +98,7 @@ fun HomeScreen(navController: NavController){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .wrapContentWidth()
+                                .align(Alignment.Center)
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.favorite_24dp),
@@ -113,6 +116,7 @@ fun HomeScreen(navController: NavController){
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier
                                 .wrapContentWidth()
+                                .align(Alignment.CenterEnd)
                         ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.notifications_24dp),
