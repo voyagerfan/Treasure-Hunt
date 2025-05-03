@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -46,7 +49,6 @@ fun AchievementsScreen() {
         type = "text/plain"
     }
     val packageManager = LocalContext.current.packageManager
-
     val appList: List<ResolveInfo> = packageManager.queryIntentActivities(
         shareIntent,
         MATCH_DEFAULT_ONLY
@@ -73,24 +75,14 @@ fun AchievementsScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    val shareList = appList.chunked(4)
-
-                    LazyColumn(
+                    LazyVerticalGrid (
+                        columns = GridCells.Fixed(4),
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 10.dp)
                     ) {
-                        items(shareList) { rowData ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                rowData.forEach { resolveInfo ->
-                                    ShareItem(resolveInfo, packageManager)
-                                }
-                            }
+                        items(appList) { resolveInfo ->
+                            ShareItem(resolveInfo, packageManager)
                         }
                     }
                 }
