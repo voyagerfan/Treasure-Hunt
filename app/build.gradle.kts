@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.accompanist:accompanist-drawablepainter:0.37.3")
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.media3:media3-common-ktx:1.6.0")

@@ -146,7 +146,7 @@ fun HomeScreen(navController: NavController){
                     .fillMaxWidth()
                     .height(screenWidth)
             ){
-                Row(){
+                Row {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
@@ -201,7 +201,7 @@ fun HomeScreen(navController: NavController){
                     }
                 }
 
-                Row(){
+                Row {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
@@ -210,7 +210,7 @@ fun HomeScreen(navController: NavController){
                             .size(screenWidth/2)
                             .clickable {
                                 isClicked = !isClicked
-                                /* TODO: Add navigation from here*/
+                                navController.navigate(route = ScreenList.ACHIEVEMENTS_SCREEN.name)
                             }
                     ){
                         Text(

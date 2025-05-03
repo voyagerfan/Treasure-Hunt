@@ -3,5 +3,6 @@ package com.example.treasurehunt.data
 enum class ScreenList {
     ONBOARDING,
     RULE_SCREEN,
-    HOMESCREEN
+    HOMESCREEN,
+    ACHIEVEMENTS_SCREEN
 }
