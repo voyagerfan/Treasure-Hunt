@@ -4,7 +4,7 @@
     <style name="Theme.TreasureHunt.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/white</item>
 
-        <item name="windowSplashScreenAnimatedIcon">@drawable/map_splash_screen_264</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/map_splash_200</item>
 
         <item name="windowSplashScreenAnimationDuration">3000</item>
 

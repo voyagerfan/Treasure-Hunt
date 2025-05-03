@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.DataSource
+import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.model.Rule
 import com.example.treasurehunt.ui.theme.catamaranFamily
 
@@ -47,7 +48,7 @@ fun RuleScreen(navController: NavController) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            /* TODO: Re-route when more pages made */
+                            navController.navigate(route = ScreenList.HOMESCREEN.name)
                         }
                     ) {
                         Icon(
@@ -68,7 +69,7 @@ fun RuleScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { /*TODO: Add next route here*/ },
+                        onClick = { navController.navigate(route = ScreenList.HOMESCREEN.name) },
                         modifier =
                             Modifier
                                 .fillMaxWidth()

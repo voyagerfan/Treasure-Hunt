@@ -30,7 +30,6 @@ import javax.inject.Inject
 class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context
 ): ViewModel() {
-
     private val _permissions = MutableStateFlow(PermissionUiState())
     val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
 

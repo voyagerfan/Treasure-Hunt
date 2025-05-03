@@ -65,7 +65,7 @@ fun OnboardingScreen(
                 )
             }
         } else if (uiState.isFineAccessGranted || uiState.isCoarseAccessGranted) {
-            navController.navigate(route = ScreenList.RULE_SCREEN.name)
+            navController.navigate(route = ScreenList.HOMESCREEN.name)
         } else {
             Button(
                 onClick = { activity.finish() }

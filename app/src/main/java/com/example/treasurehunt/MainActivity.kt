@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
 import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
@@ -60,6 +61,9 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = ScreenList.RULE_SCREEN.name) {
                             RuleScreen(navController = navController)
+                        }
+                        composable(route = ScreenList.HOMESCREEN.name) {
+                            HomeScreen(navController = navController)
                         }
                     }
                 }
