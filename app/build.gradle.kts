@@ -3,6 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("com.apollographql.apollo") version "4.2.0"
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.example")
+    }
 }
 
 android {
@@ -52,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation("com.apollographql.apollo:apollo-runtime:4.2.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.37.3")
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
