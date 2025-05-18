@@ -1,0 +1,6 @@
+query GetGreeting {
+    greetings {
+        title
+        subtitle
+    }
+}
