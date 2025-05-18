@@ -8,7 +8,10 @@ plugins {
 
 apollo {
     service("service") {
-        packageName.set("com.example")
+        packageName.set("com.example.treasurehunt")
+        sourceFolder = "src/main/java/com/example/treasurehunt/utils/graphql"
+        srcDir("src/main/java/com/example/treasurehunt/utils/graphql")
+        schemaFile = file("src/main/java/com/example/treasurehunt/utils/graphql/schema.graphqls")
     }
 }
 
@@ -59,6 +62,8 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.apollographql.apollo:apollo-runtime:4.2.0")
     implementation("com.google.accompanist:accompanist-drawablepainter:0.37.3")
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
