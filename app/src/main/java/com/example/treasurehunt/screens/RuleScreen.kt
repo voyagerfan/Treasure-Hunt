@@ -48,7 +48,7 @@ fun RuleScreen(navController: NavController) {
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(route = ScreenList.HOMESCREEN.name)
+                            navController.navigate(route = ScreenList.HOME_SCREEN.name)
                         }
                     ) {
                         Icon(
@@ -69,7 +69,7 @@ fun RuleScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { navController.navigate(route = ScreenList.HOMESCREEN.name) },
+                        onClick = { navController.navigate(route = ScreenList.HOME_SCREEN.name) },
                         modifier =
                             Modifier
                                 .fillMaxWidth()

@@ -1,0 +1,10 @@
+-- schema.sql
+CREATE TABLE quest (
+    id SERIAL PRIMARY KEY,
+    city VARCHAR(100) NOT NULL,
+    lat DECIMAL(9,6) NOT NULL,
+    lon DECIMAL(9,6) NOT NULL,
+    clue1 VARCHAR(255) NOT NULL,
+    clue2 VARCHAR(255) NOT NULL,
+    hint VARCHAR(255) NOT NULL
+);

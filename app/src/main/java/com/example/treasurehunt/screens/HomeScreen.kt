@@ -1,6 +1,5 @@
 package com.example.treasurehunt.screens
 
-import android.text.style.AlignmentSpan
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -43,6 +44,7 @@ import androidx.navigation.NavController
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.ui.theme.catamaranFamily
+import com.example.treasurehunt.utils.graphQLClient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +52,14 @@ fun HomeScreen(navController: NavController){
     val scrollState = rememberScrollState()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     var isClicked by remember { mutableStateOf(false) }
+    var allGreetings by remember { mutableStateOf("Loading...") }
+
+
+    LaunchedEffect(Unit) {
+        val result = graphQLClient.fetchGreetings()
+        allGreetings = result?.toString() ?: ""
+    }
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -103,7 +113,7 @@ fun HomeScreen(navController: NavController){
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.favorite_24dp),
                                 contentDescription = "Favorites",
-                                tint = androidx.compose.ui.graphics.Color.Red
+                                tint = Color.Red
                             )
                             Text(
                                 text = "Favorites",
@@ -121,7 +131,7 @@ fun HomeScreen(navController: NavController){
                             Icon(
                                 imageVector = ImageVector.vectorResource(R.drawable.notifications_24dp),
                                 contentDescription = "Notifications",
-                                tint = androidx.compose.ui.graphics.Color(0xFFFFD700)
+                                tint = Color(0xFFFFD700)
                             )
                             Text(
                                 text = "Notifications",
@@ -145,17 +155,17 @@ fun HomeScreen(navController: NavController){
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(screenWidth)
-            ){
+            ) {
                 Row {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
                             .padding(2.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .size(screenWidth/2)
+                            .size(screenWidth / 2)
                             .clickable {
                                 isClicked = !isClicked
-                            /* TODO: Add navigation from here*/
+                                navController.navigate(route = ScreenList.START_SCREEN.name)
                             }
 
                     ){
@@ -179,7 +189,7 @@ fun HomeScreen(navController: NavController){
                         modifier = Modifier
                             .padding(2.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .size(screenWidth/2)
+                            .size(screenWidth / 2)
                             .clickable {
                                 isClicked = !isClicked
                                 navController.navigate(route = ScreenList.RULE_SCREEN.name)
@@ -207,7 +217,7 @@ fun HomeScreen(navController: NavController){
                         modifier = Modifier
                             .padding(2.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .size(screenWidth/2)
+                            .size(screenWidth / 2)
                             .clickable {
                                 isClicked = !isClicked
                                 navController.navigate(route = ScreenList.ACHIEVEMENTS_SCREEN.name)
@@ -232,10 +242,11 @@ fun HomeScreen(navController: NavController){
                         modifier = Modifier
                             .padding(2.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .size(screenWidth/2)
+                            .size(screenWidth / 2)
                             .clickable {
                                 isClicked = !isClicked
-                                /* TODO: Add navigation from here*/
+                                /*TODO: Adding clickable behavior here */
+
                             }
                     ){
                         Text(
@@ -254,8 +265,27 @@ fun HomeScreen(navController: NavController){
                     }
                 }
             }
+            /* Temporary testing for graphlql output */
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+
+            ) {
+                Text(
+                    text = allGreetings,
+                    fontSize = 50.sp,
+                    color = Color.Black,
+                )
+            }
         }
     }
+}
+
+@Composable
+fun DisaplyText(greeting: String) {
+    Text(
+        text = greeting
+    )
 }
 
 @Preview
