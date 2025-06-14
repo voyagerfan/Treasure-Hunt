@@ -8,7 +8,6 @@ CS492
 
 package com.example.treasurehunt
 
-import ClueScreen
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -19,9 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -71,7 +67,7 @@ class MainActivity : ComponentActivity() {
                             AchievementsScreen()
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
-
+                            // clue screen here.
                         }
                     }
                 }

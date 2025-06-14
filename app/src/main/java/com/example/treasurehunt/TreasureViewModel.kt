@@ -9,12 +9,25 @@ https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-je
 
 package com.example.treasurehunt
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Looper
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
+import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.model.Geo
+import com.example.treasurehunt.utils.AppUtils
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -26,10 +39,42 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@SuppressLint("MissingPermission")
 @HiltViewModel
 class TreasureViewModel @Inject constructor(
-    @ApplicationContext private val applicationContext: Context
+    @ApplicationContext private val applicationContext: Context,
+    private val fusedLocationClient: FusedLocationProviderClient
 ): ViewModel() {
+
+    /* new adds */
+
+    private var currentGeo = geo1
+
+    private val _distanceFromDestination = MutableStateFlow<Double>(1000.0)
+    val distanceFromDestination: StateFlow<Double> = _distanceFromDestination.asStateFlow()
+
+    fun getCurrentLocation() {
+        val cancellationTokenSource = CancellationTokenSource()
+        fusedLocationClient.getCurrentLocation(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            cancellationTokenSource.token
+        ).addOnSuccessListener { location ->
+             updateCurrentLoc(
+                 lat = location.latitude,
+                 lon = location.longitude
+             )
+            _distanceFromDestination.value = AppUtils.haversine(
+                destination = currentGeo,
+                origin = listOf(location.latitude, location.longitude)
+            )
+        }.addOnFailureListener { exception ->
+            // TODO: trigger a snack bar message for top level exception
+            logStackTrace(exception)
+        }
+    }
+
+    /* end new adds*/
+
     private val _permissions = MutableStateFlow(PermissionUiState())
     val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
 
@@ -150,5 +195,18 @@ Timer functions
     override fun onCleared() {
         super.onCleared()
         timerJob?.cancel()
+    }
+
+    private fun logStackTrace(exception: Exception) {
+        var current: Throwable? = exception
+        var depth = 0
+        while (current?.cause != null) {
+            Log.e("Error", "Exception at level $depth: ${current.message}")
+            current.stackTrace.forEachIndexed { index, element ->
+                Log.e("$index", "  at ${element.className}.${element.methodName} (${element.fileName}:${element.lineNumber})")
+            }
+            current = current.cause
+            depth++
+        }
     }
 }
