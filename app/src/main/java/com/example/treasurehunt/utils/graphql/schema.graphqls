@@ -1,6 +1,5 @@
 type Greeting {
   title: String
-
   subtitle: String
 }
 

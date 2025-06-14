@@ -8,6 +8,7 @@ CS492
 
 package com.example.treasurehunt
 
+import ClueScreen
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -63,11 +64,14 @@ class MainActivity : ComponentActivity() {
                         composable(route = ScreenList.RULE_SCREEN.name) {
                             RuleScreen(navController = navController)
                         }
-                        composable(route = ScreenList.HOMESCREEN.name) {
+                        composable(route = ScreenList.HOME_SCREEN.name) {
                             HomeScreen(navController = navController)
                         }
                         composable(route = ScreenList.ACHIEVEMENTS_SCREEN.name) {
                             AchievementsScreen()
+                        }
+                        composable(route = ScreenList.START_SCREEN.name) {
+
                         }
                     }
                 }
