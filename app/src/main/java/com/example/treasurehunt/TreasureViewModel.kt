@@ -26,7 +26,9 @@ import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.Geo
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
+import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -53,6 +55,12 @@ class TreasureViewModel @Inject constructor(
 ): ViewModel() {
 
     /* new adds */
+    private val locationRequest = CurrentLocationRequest.Builder()
+        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+        .setMaxUpdateAgeMillis(0)
+        .setDurationMillis(10000)
+        .setGranularity(Granularity.GRANULARITY_FINE)
+        .build()
 
     private var currentGeo = geo1
 
@@ -69,7 +77,7 @@ class TreasureViewModel @Inject constructor(
             try {
                 val getLocation = fusedLocationClient
                     .getCurrentLocation(
-                        Priority.PRIORITY_HIGH_ACCURACY,
+                        locationRequest,
                         cancellationTokenSource.token
                     )
                     .await() ?: throw IllegalStateException("Unable to determine Location")
