@@ -13,6 +13,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Looper
 import android.util.Log
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,14 +22,17 @@ import com.example.treasurehunt.data.DataSource
 import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.Geo
 import com.example.treasurehunt.utils.AppUtils
+import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -37,6 +42,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
@@ -50,27 +56,55 @@ class TreasureViewModel @Inject constructor(
 
     private var currentGeo = geo1
 
-    private val _distanceFromDestination = MutableStateFlow<Double>(1000.0)
-    val distanceFromDestination: StateFlow<Double> = _distanceFromDestination.asStateFlow()
+    private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
+    val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
+
+    private var _currentAttemptQueue = MutableStateFlow(ArrayDeque<AttemptList>())
+    private var attemptCount = mutableIntStateOf(0)
 
     fun getCurrentLocation() {
-        val cancellationTokenSource = CancellationTokenSource()
-        fusedLocationClient.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            cancellationTokenSource.token
-        ).addOnSuccessListener { location ->
-             updateCurrentLoc(
-                 lat = location.latitude,
-                 lon = location.longitude
-             )
-            _distanceFromDestination.value = AppUtils.haversine(
-                destination = currentGeo,
-                origin = listOf(location.latitude, location.longitude)
-            )
-        }.addOnFailureListener { exception ->
-            // TODO: trigger a snack bar message for top level exception
-            logStackTrace(exception)
+        _locationLoadingState.value = Response.Loading()
+        viewModelScope.launch {
+            val cancellationTokenSource = CancellationTokenSource()
+            try {
+                val getLocation = fusedLocationClient
+                    .getCurrentLocation(
+                        Priority.PRIORITY_HIGH_ACCURACY,
+                        cancellationTokenSource.token
+                    )
+                    .await() ?: throw IllegalStateException("Unable to determine Location")
+                updateCurrentLoc(
+                    lat = getLocation.latitude,
+                    lon = getLocation.longitude
+                )
+                // calculations and updates
+                attemptCount.intValue += 1
+                val distance = AppUtils.haversine(
+                    destination = currentGeo,
+                    origin = listOf(getLocation.latitude, getLocation.longitude),
+                )
+                _currentAttemptQueue.value = ArrayDeque(_currentAttemptQueue.value).apply {
+                    addFirst(
+                        AttemptList(
+                            attemptNumber = attemptCount.intValue,
+                            distance = distance,
+                        )
+                    )
+                }
+                _locationLoadingState.value = Response.Success(data = distance)
+            } catch (e: Exception) {
+                _locationLoadingState.value = Response.Error(exception = e)
+                logStackTrace(e)
+            }
         }
+    }
+
+    fun updateLoadingStateToIdle() {
+        _locationLoadingState.value = Response.Idle()
+    }
+
+    fun getCurrentAttemptQueue(): ArrayDeque<AttemptList> {
+        return _currentAttemptQueue.value
     }
 
     /* end new adds*/

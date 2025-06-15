@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -26,10 +28,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.screens.AchievementsScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
 import com.example.treasurehunt.screens.RuleScreen
+import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -67,7 +71,18 @@ class MainActivity : ComponentActivity() {
                             AchievementsScreen()
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
-                            // clue screen here.
+                            val timerValue by viewModel.timer.collectAsState()
+                            val treasureUiState by viewModel.uiState.collectAsState()
+                            StartGameScreen(
+                                viewModel = viewModel,
+                                onFoundItClick = {
+                                    viewModel.getCurrentLocation()
+                                },
+                                onHintClick = {},
+                                treasureUIstate = treasureUiState,
+                                timerValue = timerValue,
+                                onQuitClick = { }
+                            )
                         }
                     }
                 }
