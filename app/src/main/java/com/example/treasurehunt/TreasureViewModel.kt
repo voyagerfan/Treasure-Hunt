@@ -11,11 +11,8 @@ package com.example.treasurehunt
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Looper
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
@@ -23,18 +20,13 @@ import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
-import com.example.treasurehunt.model.Geo
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
