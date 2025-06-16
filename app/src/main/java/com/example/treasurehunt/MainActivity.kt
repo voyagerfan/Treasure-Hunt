@@ -76,6 +76,7 @@ class MainActivity : ComponentActivity() {
                             StartGameScreen(
                                 viewModel = viewModel,
                                 onFoundItClick = {
+                                    viewModel.pauseTimer()
                                     viewModel.getCurrentLocation()
                                 },
                                 onHintClick = {},

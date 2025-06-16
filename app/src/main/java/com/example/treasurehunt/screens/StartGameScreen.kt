@@ -57,6 +57,7 @@ fun StartGameScreen(
 ) {
     val locationState by viewModel.locationLoadingState.collectAsState()
     var timedResponseComplete by remember { mutableStateOf(false) }
+    viewModel.startTimer()
 
     Scaffold(
         topBar = {
@@ -138,11 +139,13 @@ fun StartGameScreen(
                 when(val currentState = locationState) {
                     is Response.Loading -> CircularProgressIndicator()
                     is Response.Success -> {
+                        viewModel.startTimer()
                         TimedResponse(
                             displayTime = 3000,
                             message = "Current Distance: ${currentState.data}"
                         ) { isFinished ->
                             if(isFinished) {
+
                                 timedResponseComplete = true
                                 viewModel.updateLoadingStateToIdle()
                             }
