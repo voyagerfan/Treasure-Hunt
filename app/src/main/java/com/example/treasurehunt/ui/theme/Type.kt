@@ -8,6 +8,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.treasurehunt.R
 
+val catamaranFamily = FontFamily(
+    Font(R.font.catamaran_regular),
+    Font(R.font.catamaran_black),
+    Font(R.font.catamaran_light),
+    Font(R.font.catamaran_extra_light),
+    Font(R.font.catamaran_thin),
+    Font(R.font.catamaran_medium),
+    Font(R.font.catamaran_bold),
+    Font(R.font.catamaran_semi_bold),
+    Font(R.font.catamaran_extra_bold),
+    Font(R.font.catamaran_variable_font_wght)
+)
+
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
@@ -16,6 +30,13 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = catamaranFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        lineHeight = 24.sp
+
     )
     /* Other default text styles to override
     titleLarge = TextStyle(
@@ -35,15 +56,4 @@ val Typography = Typography(
      */
 )
 
-val catamaranFamily = FontFamily(
-    Font(R.font.catamaran_regular),
-    Font(R.font.catamaran_black),
-    Font(R.font.catamaran_light),
-    Font(R.font.catamaran_extra_light),
-    Font(R.font.catamaran_thin),
-    Font(R.font.catamaran_medium),
-    Font(R.font.catamaran_bold),
-    Font(R.font.catamaran_semi_bold),
-    Font(R.font.catamaran_extra_bold),
-    Font(R.font.catamaran_variable_font_wght)
-)
+

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -30,14 +31,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TimerScreen
 import com.example.treasurehunt.TreasureViewModel
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.delay
+import androidx.compose.ui.graphics.Color
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -81,37 +85,52 @@ fun StartGameScreen(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText)
+                text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText),
+                style = MaterialTheme.typography.bodyMedium
+
             )
             Text(
-                text = stringResource(R.string.NeedHint)
+                text = stringResource(R.string.NeedHint),
+                style = MaterialTheme.typography.bodyMedium
             )
+
             Button(
                 onClick = onHintClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 if (!treasureUIstate.showHint) {
-                    Text(stringResource(R.string.Hint))
+                    Text(
+                        text = stringResource(R.string.Hint),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 } else {
-                    Text(stringResource(R.string.HideHint))
+                    Text(
+                        text = stringResource(R.string.HideHint),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
             }
             // if the UI state property showHint == True, show the hint
             if (treasureUIstate.showHint) {
                 Text(
-                    text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint)
+                    text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint),
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             Button(
                 onClick = onFoundItClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(stringResource(R.string.FoundIt))
+                Text(
+                    text = stringResource(R.string.FoundIt),
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
 
             TimerScreen(timerValue = timerValue)
@@ -121,7 +140,7 @@ fun StartGameScreen(
                     is Response.Success -> {
                         TimedResponse(
                             displayTime = 3000,
-                            message = "Distance from Destination: ${currentState.data}"
+                            message = "Current Distance: ${currentState.data}"
                         ) { isFinished ->
                             if(isFinished) {
                                 timedResponseComplete = true
@@ -142,9 +161,11 @@ fun StartGameScreen(
                 onClick = onQuitClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text("Quit")
+                Text(
+                    text = "Quit",
+                    style = MaterialTheme.typography.bodyMedium
+                )
             }
-
         }
     }
 }
@@ -153,13 +174,42 @@ fun StartGameScreen(
 fun HistoryTable(
     attemptHistory: ArrayDeque<AttemptList>
 ) {
-    attemptHistory.forEach { attempt ->
-        Row {
-            Text(attempt.attemptNumber.toString())
-            Spacer(modifier = Modifier.padding(10.dp))
-            Text(attempt.distance.toString())
+    Column(
+        modifier = Modifier
+            .wrapContentHeight()
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Text(
+                text = "Attempt",
+                modifier = Modifier.weight(1f),
+                style = MaterialTheme.typography.bodyMedium
+                )
+            Text(text = "Distance from Destination (km)",
+                modifier = Modifier.weight(2f),
+                fontFamily = catamaranFamily,
+                fontSize = 20.sp)
+        }
+        attemptHistory.forEach { attempt ->
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(text = attempt.attemptNumber.toString(),
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = dynamicColorByDistance(attempt.distance)
+
+                )
+                Text(text = attempt.distance.toString(),
+                    Modifier.weight(2f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = dynamicColorByDistance(attempt.distance)
+                )
+            }
         }
     }
+
 }
 
 @Composable
@@ -178,8 +228,20 @@ fun TimedResponse(
         }
     }
     if (millis > 0) {
-        Text(message)
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyMedium
+        )
     } else {
         isFinished(true)
+    }
+}
+
+fun dynamicColorByDistance(distance: Double): Color {
+    return when (distance) {
+        in 25.0..50.0 -> Color.Yellow
+        in 50.1..99.9 -> Color(0xFFFFA500)
+        in 100.0..Double.MAX_VALUE -> Color.Red
+        else -> Color.Black
     }
 }

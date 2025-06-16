@@ -21,6 +21,6 @@ object AppUtils {
             2.toDouble()
         ) * Math.cos(originLat) * Math.cos(destinationLat)
         val c = 2 * Math.asin(Math.sqrt(a))
-        return earthRadiusKm * c
+        return Math.round(earthRadiusKm * c * 1000).toDouble() / 1000
     }
 }
