@@ -76,8 +76,8 @@ class MainActivity : ComponentActivity() {
                             StartGameScreen(
                                 viewModel = viewModel,
                                 onFoundItClick = {
-                                    viewModel.pauseTimer()
                                     if (viewModel.locationLoadingState.value is Response.Idle) {
+                                        viewModel.pauseTimer()
                                         viewModel.getCurrentLocation()
                                     }
                                 },
