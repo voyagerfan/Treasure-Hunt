@@ -78,12 +78,21 @@ fun StartGameScreen(
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.primary
             ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "BY LP"
-                )
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = onQuitClick,
+                        modifier = Modifier
+                    ) {
+                        Text(
+                            text = "Quit",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
             }
         }
     ) { innerPadding ->
@@ -170,16 +179,6 @@ fun StartGameScreen(
                     modifier = Modifier
                         .wrapContentHeight(),
                     attemptHistory = if (timedResponseComplete) viewModel.getCurrentAttemptQueue() else ArrayDeque()
-                )
-            }
-            Button(
-                onClick = onQuitClick,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-            ) {
-                Text(
-                    text = "Quit",
-                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }
