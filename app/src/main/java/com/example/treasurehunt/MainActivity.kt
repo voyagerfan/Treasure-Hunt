@@ -34,6 +34,7 @@ import com.example.treasurehunt.screens.OnboardingScreen
 import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
+import com.example.treasurehunt.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -76,7 +77,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onFoundItClick = {
                                     viewModel.pauseTimer()
-                                    viewModel.getCurrentLocation()
+                                    if (viewModel.locationLoadingState.value is Response.Idle) {
+                                        viewModel.getCurrentLocation()
+                                    }
                                 },
                                 onHintClick = {},
                                 treasureUIstate = treasureUiState,
