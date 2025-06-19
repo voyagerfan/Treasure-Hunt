@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,6 +43,8 @@ import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.delay
 import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -84,85 +87,95 @@ fun StartGameScreen(
             }
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
         ) {
-            Text(
-                text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText),
-                style = MaterialTheme.typography.bodyMedium
-
-            )
-            Text(
-                text = stringResource(R.string.NeedHint),
-                style = MaterialTheme.typography.bodyMedium
-            )
-
-            Button(
-                onClick = onHintClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.TopStart),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (!treasureUIstate.showHint) {
+                Text(
+                    text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(R.string.NeedHint),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
+                Button(
+                    onClick = onHintClick,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                ) {
+                    if (!treasureUIstate.showHint) {
+                        Text(
+                            text = stringResource(R.string.Hint),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.HideHint),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+                // if the UI state property showHint == True, show the hint
+                if (treasureUIstate.showHint) {
                     Text(
-                        text = stringResource(R.string.Hint),
-                        style = MaterialTheme.typography.bodyMedium
+                        text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint),
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                } else {
+                }
+                Button(
+                    onClick = onFoundItClick,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
                     Text(
-                        text = stringResource(R.string.HideHint),
+                        text = stringResource(R.string.FoundIt),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
-            }
-            // if the UI state property showHint == True, show the hint
-            if (treasureUIstate.showHint) {
-                Text(
-                    text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Button(
-                onClick = onFoundItClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-                Text(
-                    text = stringResource(R.string.FoundIt),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
 
-            TimerScreen(timerValue = timerValue)
-            if (locationState !is Response.Idle) {
-                when(val currentState = locationState) {
-                    is Response.Loading -> CircularProgressIndicator()
-                    is Response.Success -> {
-                        viewModel.startTimer()
-                        TimedResponse(
-                            displayTime = 3000,
-                            message = "Current Distance: ${currentState.data}"
-                        ) { isFinished ->
-                            if(isFinished) {
+                TimerScreen(timerValue = timerValue)
+                Box(
+                    modifier = Modifier.height(48.dp)
+                ) {
+                    if (locationState !is Response.Idle) {
+                        when (val currentState = locationState) {
+                            is Response.Loading -> CircularProgressIndicator()
+                            is Response.Success -> {
+                                viewModel.startTimer()
+                                TimedResponse(
+                                    displayTime = 3000,
+                                    message = "Current Distance: ${currentState.data}"
+                                ) { isFinished ->
+                                    if (isFinished) {
 
-                                timedResponseComplete = true
-                                viewModel.updateLoadingStateToIdle()
+                                        timedResponseComplete = true
+                                        viewModel.updateLoadingStateToIdle()
+                                    }
+                                }
                             }
+                            else -> {}
                         }
                     }
-                    else -> {}
                 }
+
+                HistoryTable(
+                    modifier = Modifier
+                        .wrapContentHeight(),
+                    attemptHistory = if (timedResponseComplete) viewModel.getCurrentAttemptQueue() else ArrayDeque()
+                )
             }
-
-            HistoryTable(
-                attemptHistory = if(timedResponseComplete) viewModel.getCurrentAttemptQueue() else ArrayDeque()
-            )
-
-            Spacer(modifier = Modifier.height(200.dp))
             Button(
                 onClick = onQuitClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
             ) {
                 Text(
                     text = "Quit",
@@ -175,12 +188,10 @@ fun StartGameScreen(
 
 @Composable
 fun HistoryTable(
+    modifier: Modifier,
     attemptHistory: ArrayDeque<AttemptList>
 ) {
-    Column(
-        modifier = Modifier
-            .wrapContentHeight()
-    ) {
+    Column(modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.Start
         ) {

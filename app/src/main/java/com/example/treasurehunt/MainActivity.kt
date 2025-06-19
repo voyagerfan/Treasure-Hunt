@@ -28,7 +28,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.ScreenList
-import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.screens.AchievementsScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
