@@ -8,7 +8,6 @@ CS492
 
 package com.example.treasurehunt
 
-import ClueScreen
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -19,9 +18,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
@@ -34,7 +32,9 @@ import com.example.treasurehunt.screens.AchievementsScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
 import com.example.treasurehunt.screens.RuleScreen
+import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
+import com.example.treasurehunt.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -71,7 +71,26 @@ class MainActivity : ComponentActivity() {
                             AchievementsScreen()
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
-
+                            val timerValue by viewModel.timer.collectAsState()
+                            val treasureUiState by viewModel.uiState.collectAsState()
+                            StartGameScreen(
+                                viewModel = viewModel,
+                                onFoundItClick = {
+                                    if (viewModel.locationLoadingState.value is Response.Idle) {
+                                        viewModel.pauseTimer()
+                                        viewModel.getCurrentLocation()
+                                    }
+                                },
+                                onHintClick = {
+                                    viewModel.hintClicked()
+                                },
+                                treasureUIstate = treasureUiState,
+                                timerValue = timerValue,
+                                onQuitClick = {
+                                    viewModel.stopTimer()
+                                    navController.navigate(route = ScreenList.HOME_SCREEN.name)
+                                }
+                            )
                         }
                     }
                 }

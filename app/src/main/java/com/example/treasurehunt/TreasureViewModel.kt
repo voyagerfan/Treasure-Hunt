@@ -9,12 +9,24 @@ https://medium.com/@TippuFisalSheriff/creating-a-timer-screen-with-kotlin-and-je
 
 package com.example.treasurehunt
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
+import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.utils.AppUtils
+import com.example.treasurehunt.utils.Response
+import com.google.android.gms.location.CurrentLocationRequest
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Granularity
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -24,12 +36,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
+@SuppressLint("MissingPermission")
 @HiltViewModel
 class TreasureViewModel @Inject constructor(
-    @ApplicationContext private val applicationContext: Context
+    @ApplicationContext private val applicationContext: Context,
+    private val fusedLocationClient: FusedLocationProviderClient
 ): ViewModel() {
+
+    private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
+    val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
+
+    private var _currentAttemptQueue = MutableStateFlow(ArrayDeque<AttemptList>())
+    private var attemptCount = mutableIntStateOf(0)
+
     private val _permissions = MutableStateFlow(PermissionUiState())
     val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
 
@@ -39,6 +61,123 @@ class TreasureViewModel @Inject constructor(
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
+
+    private val locationRequest = CurrentLocationRequest.Builder()
+        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+        .setMaxUpdateAgeMillis(0)
+        .setDurationMillis(10000)
+        .setGranularity(Granularity.GRANULARITY_FINE)
+        .build()
+
+    private var currentGeo = geo1
+
+    fun getCurrentLocation() {
+        _locationLoadingState.value = Response.Loading()
+        viewModelScope.launch {
+            val cancellationTokenSource = CancellationTokenSource()
+            try {
+                val getLocation = fusedLocationClient
+                    .getCurrentLocation(
+                        locationRequest,
+                        cancellationTokenSource.token
+                    )
+                    .await() ?: throw IllegalStateException("Unable to determine Location")
+                updateCurrentLoc(
+                    lat = getLocation.latitude,
+                    lon = getLocation.longitude
+                )
+                // calculations and updates
+                attemptCount.intValue += 1
+                val distance = AppUtils.haversine(
+                    destination = currentGeo,
+                    origin = listOf(getLocation.latitude, getLocation.longitude),
+                )
+                _currentAttemptQueue.value = ArrayDeque(_currentAttemptQueue.value).apply {
+                    addFirst(
+                        AttemptList(
+                            attemptNumber = attemptCount.intValue,
+                            distance = distance,
+                        )
+                    )
+                }
+                _locationLoadingState.value = Response.Success(data = distance)
+            } catch (e: Exception) {
+                _locationLoadingState.value = Response.Error(exception = e)
+                logStackTrace(e)
+            }
+        }
+    }
+
+    fun updateLoadingStateToIdle() {
+        _locationLoadingState.value = Response.Idle()
+    }
+
+    fun getCurrentAttemptQueue(): ArrayDeque<AttemptList> {
+        return _currentAttemptQueue.value
+    }
+
+    fun hintClicked() {
+        if (!uiState.value.showHint) {
+            _uiState.update {
+                it.copy(
+                    showHint = true
+                )
+            }
+        } else {
+            _uiState.update {
+                it.copy(
+                    showHint = false
+                )
+            }
+        }
+    }
+
+    fun updateClueAndGeo() {
+        _uiState.update {
+            it.copy(
+                currentClue = DataSource.clue2,
+                currentGeo = DataSource.geo2
+            )
+        }
+    }
+
+    fun updateCurrentLoc(
+        lat: Double,
+        lon: Double
+    ) {
+        _uiState.update {
+            it.copy(
+                currentLoc = mutableListOf(lat, lon)
+            )
+        }
+    }
+
+    fun resetCurrentLoc() {
+        _uiState.update {
+            it.copy(
+                currentLoc = mutableListOf(0.0, 0.0)
+            )
+        }
+    }
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
 
     /**
      * Updates the backing property [_permissions] for the `isFineAccessGranted` based on the
@@ -80,71 +219,17 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun hintClicked() {
-        if (!uiState.value.showHint) {
-            _uiState.update {
-                it.copy(
-                    showHint = true
-                )
+    private fun logStackTrace(exception: Exception) {
+        var current: Throwable? = exception
+        var depth = 0
+        while (current?.cause != null) {
+            Log.e("Error", "Exception at level $depth: ${current.message}")
+            current.stackTrace.forEachIndexed { index, element ->
+                Log.e("$index", "  at ${element.className}.${element.methodName} (${element.fileName}:${element.lineNumber})")
             }
-        } else {
-            _uiState.update {
-                it.copy(
-                    showHint = false
-                )
-            }
+            current = current.cause
+            depth++
         }
-    }
-
-    // Update the clue and geo after first clue solved
-    fun updateClueAndGeo() {
-        _uiState.update {
-            it.copy(
-                currentClue = DataSource.clue2,
-                currentGeo = DataSource.geo2
-            )
-        }
-    }
-
-    fun updateCurrentLoc(
-        lat: Double,
-        lon: Double
-    ) {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(lat, lon)
-            )
-        }
-    }
-
-    fun resetCurrentLoc() {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(0.0, 0.0)
-            )
-        }
-    }
-
-/**************
-Timer functions
-**************/
-    fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (true) {
-                delay(1000)
-                _timer.value++
-            }
-        }
-    }
-
-    fun pauseTimer() {
-        timerJob?.cancel()
-    }
-
-    fun stopTimer() {
-        _timer.value = 0
-        timerJob?.cancel()
     }
 
     override fun onCleared() {
