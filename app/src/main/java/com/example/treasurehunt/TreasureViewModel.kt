@@ -46,7 +46,22 @@ class TreasureViewModel @Inject constructor(
     private val fusedLocationClient: FusedLocationProviderClient
 ): ViewModel() {
 
-    /* new adds */
+    private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
+    val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
+
+    private var _currentAttemptQueue = MutableStateFlow(ArrayDeque<AttemptList>())
+    private var attemptCount = mutableIntStateOf(0)
+
+    private val _permissions = MutableStateFlow(PermissionUiState())
+    val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
+
+    private val _uiState = MutableStateFlow(TreasureUiState())
+    val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
+
+    private val _timer = MutableStateFlow(0)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
     private val locationRequest = CurrentLocationRequest.Builder()
         .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
         .setMaxUpdateAgeMillis(0)
@@ -55,12 +70,6 @@ class TreasureViewModel @Inject constructor(
         .build()
 
     private var currentGeo = geo1
-
-    private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
-    val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
-
-    private var _currentAttemptQueue = MutableStateFlow(ArrayDeque<AttemptList>())
-    private var attemptCount = mutableIntStateOf(0)
 
     fun getCurrentLocation() {
         _locationLoadingState.value = Response.Loading()
@@ -107,17 +116,68 @@ class TreasureViewModel @Inject constructor(
         return _currentAttemptQueue.value
     }
 
-    /* end new adds*/
+    fun hintClicked() {
+        if (!uiState.value.showHint) {
+            _uiState.update {
+                it.copy(
+                    showHint = true
+                )
+            }
+        } else {
+            _uiState.update {
+                it.copy(
+                    showHint = false
+                )
+            }
+        }
+    }
 
-    private val _permissions = MutableStateFlow(PermissionUiState())
-    val uiStatePermissions: StateFlow<PermissionUiState> = _permissions.asStateFlow()
+    fun updateClueAndGeo() {
+        _uiState.update {
+            it.copy(
+                currentClue = DataSource.clue2,
+                currentGeo = DataSource.geo2
+            )
+        }
+    }
 
-    private val _uiState = MutableStateFlow(TreasureUiState())
-    val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
+    fun updateCurrentLoc(
+        lat: Double,
+        lon: Double
+    ) {
+        _uiState.update {
+            it.copy(
+                currentLoc = mutableListOf(lat, lon)
+            )
+        }
+    }
 
-    private val _timer = MutableStateFlow(0)
-    val timer = _timer.asStateFlow()
-    private var timerJob: Job? = null
+    fun resetCurrentLoc() {
+        _uiState.update {
+            it.copy(
+                currentLoc = mutableListOf(0.0, 0.0)
+            )
+        }
+    }
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
 
     /**
      * Updates the backing property [_permissions] for the `isFineAccessGranted` based on the
@@ -159,78 +219,6 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun hintClicked() {
-        if (!uiState.value.showHint) {
-            _uiState.update {
-                it.copy(
-                    showHint = true
-                )
-            }
-        } else {
-            _uiState.update {
-                it.copy(
-                    showHint = false
-                )
-            }
-        }
-    }
-
-    // Update the clue and geo after first clue solved
-    fun updateClueAndGeo() {
-        _uiState.update {
-            it.copy(
-                currentClue = DataSource.clue2,
-                currentGeo = DataSource.geo2
-            )
-        }
-    }
-
-    fun updateCurrentLoc(
-        lat: Double,
-        lon: Double
-    ) {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(lat, lon)
-            )
-        }
-    }
-
-    fun resetCurrentLoc() {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(0.0, 0.0)
-            )
-        }
-    }
-
-/**************
-Timer functions
-**************/
-    fun startTimer() {
-        timerJob?.cancel()
-        timerJob = viewModelScope.launch {
-            while (true) {
-                delay(1000)
-                _timer.value++
-            }
-        }
-    }
-
-    fun pauseTimer() {
-        timerJob?.cancel()
-    }
-
-    fun stopTimer() {
-        _timer.value = 0
-        timerJob?.cancel()
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        timerJob?.cancel()
-    }
-
     private fun logStackTrace(exception: Exception) {
         var current: Throwable? = exception
         var depth = 0
@@ -242,5 +230,10 @@ Timer functions
             current = current.cause
             depth++
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
     }
 }
