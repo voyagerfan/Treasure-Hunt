@@ -81,10 +81,15 @@ class MainActivity : ComponentActivity() {
                                         viewModel.getCurrentLocation()
                                     }
                                 },
-                                onHintClick = {},
+                                onHintClick = {
+                                    viewModel.hintClicked()
+                                },
                                 treasureUIstate = treasureUiState,
                                 timerValue = timerValue,
-                                onQuitClick = { }
+                                onQuitClick = {
+                                    viewModel.stopTimer()
+                                    navController.navigate(route = ScreenList.HOME_SCREEN.name)
+                                }
                             )
                         }
                     }
