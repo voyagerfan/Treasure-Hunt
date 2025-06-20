@@ -1,17 +1,12 @@
 package com.example.treasurehunt.di
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
-import android.location.Location
-import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.Task
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
