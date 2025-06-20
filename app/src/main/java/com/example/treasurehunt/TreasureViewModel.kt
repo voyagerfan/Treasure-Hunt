@@ -11,7 +11,6 @@ package com.example.treasurehunt
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
@@ -19,16 +18,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
 import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
+import com.example.treasurehunt.data.TreasureHuntGraphQLService
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Granularity
-import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -46,7 +43,8 @@ import javax.inject.Inject
 class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
-    private val locationRequest: CurrentLocationRequest
+    private val locationRequest: CurrentLocationRequest,
+    private val apolloClient: TreasureHuntGraphQLService
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
@@ -111,6 +109,13 @@ class TreasureViewModel @Inject constructor(
     fun getCurrentAttemptQueue(): ArrayDeque<AttemptList> {
         return _currentAttemptQueue.value
     }
+
+    /* TODO: wrap w/ viewModelScope and update a mutable state variable & test
+    fun getGreetings(): List<GetGreetingQuery.Greeting?>? {
+        val greetingJob = viewModelScope.launch {
+            apolloClient.fetchGreetings()
+        }
+    } */
 
     fun hintClicked() {
         if (!uiState.value.showHint) {
