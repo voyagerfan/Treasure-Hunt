@@ -11,6 +11,7 @@ package com.example.treasurehunt
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
@@ -43,7 +45,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    private val fusedLocationClient: FusedLocationProviderClient
+    private val fusedLocationClient: FusedLocationProviderClient,
+    private val locationRequest: CurrentLocationRequest
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
@@ -61,13 +64,6 @@ class TreasureViewModel @Inject constructor(
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
-
-    private val locationRequest = CurrentLocationRequest.Builder()
-        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-        .setMaxUpdateAgeMillis(0)
-        .setDurationMillis(10000)
-        .setGranularity(Granularity.GRANULARITY_FINE)
-        .build()
 
     private var currentGeo = geo1
 
