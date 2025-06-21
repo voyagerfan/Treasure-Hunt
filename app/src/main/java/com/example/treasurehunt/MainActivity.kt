@@ -75,6 +75,7 @@ class MainActivity : ComponentActivity() {
                             AchievementsScreen()
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
+                            StartGameScreen()
 
                         }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {

@@ -62,6 +62,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.compose.material3:material3:1.4.0-alpha16")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
