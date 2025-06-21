@@ -74,6 +74,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = ScreenList.ACHIEVEMENTS_SCREEN.name) {
                             AchievementsScreen()
                         }
+                        composable(route = ScreenList.START_SCREEN.name) {
+
+                        }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
                             val timerValue by viewModel.timer.collectAsState()
                             val treasureUiState by viewModel.uiState.collectAsState()
