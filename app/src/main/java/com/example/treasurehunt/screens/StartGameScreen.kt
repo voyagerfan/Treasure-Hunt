@@ -49,17 +49,15 @@ import kotlinx.coroutines.delay
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartGameScreen(
+    locationState: Response<Double>,
     viewModel: TreasureViewModel = hiltViewModel(),
     onFoundItClick: () -> Unit,
     onHintClick: () -> Unit,
     treasureUIstate: TreasureUiState,
-    timerValue: Int,
+    timerView: @Composable () -> Unit,
     onQuitClick: () -> Unit
 ) {
-    val locationState by viewModel.locationLoadingState.collectAsState()
     var timedResponseComplete by remember { mutableStateOf(false) }
-    viewModel.startTimer()
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -148,7 +146,8 @@ fun StartGameScreen(
                     )
                 }
 
-                TimerScreen(timerValue = timerValue)
+                timerView()
+
                 Box(
                     modifier = Modifier.height(48.dp)
                 ) {
@@ -156,13 +155,11 @@ fun StartGameScreen(
                         when (val currentState = locationState) {
                             is Response.Loading -> CircularProgressIndicator()
                             is Response.Success -> {
-                                viewModel.startTimer()
                                 TimedResponse(
                                     displayTime = 3000,
                                     message = "Current Distance: ${currentState.data}"
                                 ) { isFinished ->
                                     if (isFinished) {
-
                                         timedResponseComplete = true
                                         viewModel.updateLoadingStateToIdle()
                                     }
@@ -170,6 +167,8 @@ fun StartGameScreen(
                             }
                             else -> {}
                         }
+                    } else {
+                        viewModel.startTimer()
                     }
                 }
 

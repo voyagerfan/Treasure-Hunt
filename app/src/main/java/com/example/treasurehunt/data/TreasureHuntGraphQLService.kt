@@ -3,7 +3,6 @@ package com.example.treasurehunt.data
 import android.util.Log
 import com.apollographql.apollo.ApolloClient
 import com.example.treasurehunt.GetGreetingQuery
-import com.example.treasurehunt.utils.graphQLClient
 
 class TreasureHuntGraphQLService (private val apolloClient: ApolloClient) {
 

@@ -65,7 +65,10 @@ class MainActivity : ComponentActivity() {
                             RuleScreen(navController = navController)
                         }
                         composable(route = ScreenList.HOME_SCREEN.name) {
-                            HomeScreen(navController = navController)
+                            HomeScreen(
+                                navController = navController,
+                                viewModel = viewModel
+                            )
                         }
                         composable(route = ScreenList.ACHIEVEMENTS_SCREEN.name) {
                             AchievementsScreen()
@@ -73,7 +76,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = ScreenList.START_SCREEN.name) {
                             val timerValue by viewModel.timer.collectAsState()
                             val treasureUiState by viewModel.uiState.collectAsState()
+                            val locationState by viewModel.locationLoadingState.collectAsState()
                             StartGameScreen(
+                                locationState = locationState,
                                 viewModel = viewModel,
                                 onFoundItClick = {
                                     if (viewModel.locationLoadingState.value is Response.Idle) {
@@ -85,7 +90,9 @@ class MainActivity : ComponentActivity() {
                                     viewModel.hintClicked()
                                 },
                                 treasureUIstate = treasureUiState,
-                                timerValue = timerValue,
+                                timerView = {
+                                    TimerScreen(timerValue = timerValue)
+                                },
                                 onQuitClick = {
                                     viewModel.stopTimer()
                                     navController.navigate(route = ScreenList.HOME_SCREEN.name)

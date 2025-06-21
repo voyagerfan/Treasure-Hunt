@@ -21,6 +21,7 @@ import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.StartGameState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest
@@ -59,11 +60,18 @@ class TreasureViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TreasureUiState())
     val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
 
+    private val _gameStartScreenState = MutableStateFlow(StartGameState())
+    val gameStartScreenState: StateFlow<StartGameState> = _gameStartScreenState.asStateFlow()
+
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
     private var currentGeo = geo1
+
+    init {
+        getGreetings()
+    }
 
     fun getCurrentLocation() {
         _locationLoadingState.value = Response.Loading()
@@ -110,12 +118,14 @@ class TreasureViewModel @Inject constructor(
         return _currentAttemptQueue.value
     }
 
-    /* TODO: wrap w/ viewModelScope and update a mutable state variable & test
-    fun getGreetings(): List<GetGreetingQuery.Greeting?>? {
-        val greetingJob = viewModelScope.launch {
-            apolloClient.fetchGreetings()
+    fun getGreetings() {
+        viewModelScope.launch {
+            val fetchedGreetings = apolloClient.fetchGreetings().let { it?.filterNotNull()} ?: emptyList()
+            _gameStartScreenState.update {
+                it.copy(greetings = fetchedGreetings)
+            }
         }
-    } */
+    }
 
     fun hintClicked() {
         if (!uiState.value.showHint) {
