@@ -5,5 +5,6 @@ enum class ScreenList {
     RULE_SCREEN,
     HOME_SCREEN,
     ACHIEVEMENTS_SCREEN,
-    START_SCREEN
+    START_SCREEN,
+    PLAY_GAME_SCREEN
 }

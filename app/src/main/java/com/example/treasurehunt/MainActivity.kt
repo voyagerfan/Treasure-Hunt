@@ -31,6 +31,7 @@ import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.screens.AchievementsScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
+import com.example.treasurehunt.screens.PlayGameScreen
 import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
@@ -73,11 +74,11 @@ class MainActivity : ComponentActivity() {
                         composable(route = ScreenList.ACHIEVEMENTS_SCREEN.name) {
                             AchievementsScreen()
                         }
-                        composable(route = ScreenList.START_SCREEN.name) {
+                        composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
                             val timerValue by viewModel.timer.collectAsState()
                             val treasureUiState by viewModel.uiState.collectAsState()
                             val locationState by viewModel.locationLoadingState.collectAsState()
-                            StartGameScreen(
+                            PlayGameScreen(
                                 locationState = locationState,
                                 viewModel = viewModel,
                                 onFoundItClick = {
