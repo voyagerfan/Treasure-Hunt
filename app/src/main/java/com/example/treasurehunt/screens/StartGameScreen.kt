@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -43,6 +45,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.R
+import com.example.treasurehunt.data.questList
+import com.example.treasurehunt.model.QuestItem
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -105,6 +109,15 @@ fun StartGameScreen(
                 ) {
                     /*TODO: query results based on textFieldState.text*/
                     /*TODO: create and add list of quest items for now */
+
+                    LazyColumn {
+                        items(questList) { quest ->
+                            QuestCard(
+                                questItem = quest,
+                                distToDestination = 1000.0
+                            )
+                        }
+                    }
                 }
             }
         },
@@ -122,9 +135,7 @@ fun StartGameScreen(
 
 @Composable
 fun QuestCard(
-    title: String,
-    description: String,
-    questRating: Double,
+    questItem: QuestItem,
     distToDestination: Double? = null
 ) {
     Card(
@@ -149,7 +160,7 @@ fun QuestCard(
         ) {
             Column(
                 horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(5.dp),
                 modifier = Modifier
                     .padding(8.dp)
                     .then(
@@ -159,11 +170,11 @@ fun QuestCard(
                     )
             ) {
                 Text(
-                    text = title,
+                    text = questItem.title,
                     style = MaterialTheme.typography.titleLarge
                 )
                 Text(
-                    text = description,
+                    text = questItem.description,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Row(
@@ -173,9 +184,9 @@ fun QuestCard(
                         .wrapContentHeight()
                         .wrapContentWidth()
                 ) {
-                    StarRating(rating = questRating)
+                    StarRating(rating = questItem.rating)
                     Text(
-                        text = questRating.toString(),
+                        text = questItem.rating.toString(),
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -272,9 +283,7 @@ fun TestStartRating() {
 @Composable
 fun ViewQuestCard() {
     QuestCard(
-        title = "Hello",
-        description = "World",
-        questRating = 3.8,
+        questItem = questList[0],
         distToDestination = 1000.0
     )
 }

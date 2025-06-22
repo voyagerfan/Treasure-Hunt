@@ -14,6 +14,7 @@ data class QuestItem(
     val description: String,
     val clue: String,
     val hint: String,
-    val coordinates: Pair<Double, Double>
+    val coordinates: Pair<Double, Double>,
+    val rating: Double
 )
 

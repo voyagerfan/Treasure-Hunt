@@ -200,7 +200,7 @@ fun HistoryTable(
                 fontFamily = catamaranFamily,
                 fontSize = 20.sp)
         }
-        LazyColumn {
+        LazyColumn() {
             items(attemptHistory) { attempt ->
                 Row(
                     horizontalArrangement = Arrangement.Start
