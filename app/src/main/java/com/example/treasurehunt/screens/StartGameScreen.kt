@@ -55,8 +55,7 @@ fun StartGameScreen(
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
 
-    val inputField =
-    @Composable {
+    val inputField = @Composable {
         SearchBarDefaults.InputField(
             modifier = Modifier,
             searchBarState = searchBarState,
@@ -126,35 +125,72 @@ fun QuestCard(
     title: String,
     description: String,
     questRating: Double,
-    coordinates: Pair<Double, Double>
+    distToDestination: Double? = null
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                /*TODO: update game state with clue, hint & navigate to game screen */
-            },
+            .padding(16.dp)
+            .clickable(
+                onClick = { /*TODO: add functionality*/ },
+            ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 15.dp,
             pressedElevation = 5.dp
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Text(text = title)
-            Text(text = description)
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+        ) {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .wrapContentHeight()
-                    .wrapContentWidth()
+                    .padding(8.dp)
+                    .then(
+                        Modifier
+                            .weight(0.6f)
+                            .takeIf { distToDestination != null } ?: Modifier
+                    )
             ) {
-                StarRating(rating = questRating)
-                Text(text = questRating.toString())
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .wrapContentWidth()
+                ) {
+                    StarRating(rating = questRating)
+                    Text(
+                        text = questRating.toString(),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            if(distToDestination != null) {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(0.4f)
+                ){
+                    Text(
+                        text = "$distToDestination km",
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
             }
         }
     }
@@ -168,7 +204,6 @@ fun StarRating(
         modifier = Modifier
             .wrapContentHeight()
             .wrapContentWidth()
-            .padding(horizontal = 10.dp)
             .background(color = Color.Gray),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -236,5 +271,10 @@ fun TestStartRating() {
 @Preview
 @Composable
 fun ViewQuestCard() {
-    /**/
+    QuestCard(
+        title = "Hello",
+        description = "World",
+        questRating = 3.8,
+        distToDestination = 1000.0
+    )
 }
