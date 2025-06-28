@@ -85,7 +85,7 @@ Once you have downloaded and installed Android Studio:
 > The correct locations for each clue are hard coded in datasource.kt. To advance through the application, the emulator location must be manually configured before each location check. Please refer to the discussion [HERE](https://stackoverflow.com/questions/47528006/how-to-set-the-location-manually-in-android-studio-emulator) to achieve this.
 
 * Press the Run icon in the top right corner of the IDE
-* After succesfull completion of the first clue, make sure to change the emulator location for the next clue.
+* After successful completion of the first clue, make sure to change the emulator location for the next clue.
 
 
 

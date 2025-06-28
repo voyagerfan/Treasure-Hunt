@@ -31,6 +31,7 @@ import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.screens.AchievementsScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
+import com.example.treasurehunt.screens.PlayGameScreen
 import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
@@ -65,15 +66,28 @@ class MainActivity : ComponentActivity() {
                             RuleScreen(navController = navController)
                         }
                         composable(route = ScreenList.HOME_SCREEN.name) {
-                            HomeScreen(navController = navController)
+                            HomeScreen(
+                                navController = navController,
+                                viewModel = viewModel
+                            )
                         }
                         composable(route = ScreenList.ACHIEVEMENTS_SCREEN.name) {
                             AchievementsScreen()
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
+                            StartGameScreen(
+                                onBackArrowPressed = {navController.navigate(route = ScreenList.HOME_SCREEN.name) }
+                            ) { userSelectedQuest ->
+                                viewModel.updateUserQuest(userSelectedQuest)
+                                navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
+                            }
+                        }
+                        composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
                             val timerValue by viewModel.timer.collectAsState()
                             val treasureUiState by viewModel.uiState.collectAsState()
-                            StartGameScreen(
+                            val locationState by viewModel.locationLoadingState.collectAsState()
+                            PlayGameScreen(
+                                locationState = locationState,
                                 viewModel = viewModel,
                                 onFoundItClick = {
                                     if (viewModel.locationLoadingState.value is Response.Idle) {
@@ -85,7 +99,9 @@ class MainActivity : ComponentActivity() {
                                     viewModel.hintClicked()
                                 },
                                 treasureUIstate = treasureUiState,
-                                timerValue = timerValue,
+                                timerView = {
+                                    TimerScreen(timerValue = timerValue)
+                                },
                                 onQuitClick = {
                                     viewModel.stopTimer()
                                     navController.navigate(route = ScreenList.HOME_SCREEN.name)

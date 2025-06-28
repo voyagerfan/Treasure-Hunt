@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,19 +41,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.treasurehunt.R
+import com.example.treasurehunt.TreasureViewModel
 import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.graphQLClient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController){
+fun HomeScreen(
+    navController: NavController,
+    viewModel: TreasureViewModel = hiltViewModel()
+) {
     val scrollState = rememberScrollState()
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     var isClicked by remember { mutableStateOf(false) }
     var allGreetings by remember { mutableStateOf("Loading...") }
+    val viewModelGreeting by viewModel.gameStartScreenState.collectAsState()
 
 
     LaunchedEffect(Unit) {
@@ -265,15 +272,19 @@ fun HomeScreen(navController: NavController){
                     }
                 }
             }
-            /* Temporary testing for graphlql output */
+            /* Temporary testing for graphQL output */
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
 
             ) {
                 Text(
-                    text = allGreetings,
-                    fontSize = 50.sp,
+                    text = if(viewModelGreeting.greetings?.isEmpty() == true) {
+                        ""
+                    } else {
+                        viewModelGreeting.greetings.toString()
+                    },
+                    fontSize = 20.sp,
                     color = Color.Black,
                 )
             }
@@ -282,7 +293,7 @@ fun HomeScreen(navController: NavController){
 }
 
 @Composable
-fun DisaplyText(greeting: String) {
+fun DisplayText(greeting: String) {
     Text(
         text = greeting
     )

@@ -18,14 +18,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.treasurehunt.data.DataSource
 import com.example.treasurehunt.data.DataSource.geo1
 import com.example.treasurehunt.data.PermissionUiState
+import com.example.treasurehunt.data.TreasureHuntGraphQLService
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.QuestItem
+import com.example.treasurehunt.model.StartGameState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.Granularity
-import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -43,7 +44,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
-    private val fusedLocationClient: FusedLocationProviderClient
+    private val fusedLocationClient: FusedLocationProviderClient,
+    private val locationRequest: CurrentLocationRequest,
+    private val apolloClient: TreasureHuntGraphQLService
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
@@ -58,18 +61,18 @@ class TreasureViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TreasureUiState())
     val uiState: StateFlow<TreasureUiState> = _uiState.asStateFlow()
 
+    private val _gameStartScreenState = MutableStateFlow(StartGameState())
+    val gameStartScreenState: StateFlow<StartGameState> = _gameStartScreenState.asStateFlow()
+
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
-    private val locationRequest = CurrentLocationRequest.Builder()
-        .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-        .setMaxUpdateAgeMillis(0)
-        .setDurationMillis(10000)
-        .setGranularity(Granularity.GRANULARITY_FINE)
-        .build()
-
     private var currentGeo = geo1
+
+    init {
+        getGreetings()
+    }
 
     fun getCurrentLocation() {
         _locationLoadingState.value = Response.Loading()
@@ -114,6 +117,23 @@ class TreasureViewModel @Inject constructor(
 
     fun getCurrentAttemptQueue(): ArrayDeque<AttemptList> {
         return _currentAttemptQueue.value
+    }
+
+    fun getGreetings() {
+        viewModelScope.launch {
+            val fetchedGreetings = apolloClient.fetchGreetings().let { it?.filterNotNull()} ?: emptyList()
+            _gameStartScreenState.update {
+                it.copy(greetings = fetchedGreetings)
+            }
+        }
+    }
+
+    fun updateUserQuest(quest: QuestItem) {
+        _uiState.update {
+            it.copy(
+                currentQuest = quest
+            )
+        }
     }
 
     fun hintClicked() {

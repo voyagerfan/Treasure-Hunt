@@ -1,0 +1,2 @@
+To re-download schema from localhost server
+./gradlew :app:downloadApolloSchema --endpoint='http://127.0.0.1:4000' --schema='app/src/main/java/com/example/treasurehunt/utils/graphql/schema.graphqls'
