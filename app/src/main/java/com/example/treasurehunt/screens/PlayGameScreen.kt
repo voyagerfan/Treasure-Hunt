@@ -102,7 +102,7 @@ fun PlayGameScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = stringResource(R.string.CluePrefix) + stringResource(treasureUIstate.currentClue.clueText),
+                    text = stringResource(R.string.CluePrefix) + (treasureUIstate.currentQuest?.clue),
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Text(
@@ -130,7 +130,7 @@ fun PlayGameScreen(
                 // if the UI state property showHint == True, show the hint
                 if (treasureUIstate.showHint) {
                     Text(
-                        text = stringResource(R.string.HintPrefix) + stringResource(treasureUIstate.currentClue.clueHint),
+                        text = stringResource(R.string.HintPrefix) + (treasureUIstate.currentQuest?.hint),
                         style = MaterialTheme.typography.bodyMedium,
                     )
                 }
