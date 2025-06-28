@@ -21,6 +21,7 @@ import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.StartGameState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
@@ -124,6 +125,14 @@ class TreasureViewModel @Inject constructor(
             _gameStartScreenState.update {
                 it.copy(greetings = fetchedGreetings)
             }
+        }
+    }
+
+    fun updateUserQuest(quest: QuestItem) {
+        _uiState.update {
+            it.copy(
+                currentQuest = quest
+            )
         }
     }
 

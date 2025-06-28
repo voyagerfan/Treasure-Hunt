@@ -65,7 +65,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartGameScreen(
-    onBackArrowPressed: () -> Unit
+    onBackArrowPressed: () -> Unit,
+    questSelected: (QuestItem) -> Unit
 ) {
     val textFieldState = rememberTextFieldState()
     val searchBarState = rememberSearchBarState()
@@ -127,7 +128,10 @@ fun StartGameScreen(
                         items(questList) { quest ->
                             QuestCard(
                                 questItem = quest,
-                                distToDestination = 1000.0
+                                distToDestination = 1000.0,
+                                modifier = Modifier.clickable {
+                                    questSelected(quest)
+                                }
                             )
                         }
                     }
@@ -278,16 +282,14 @@ fun SearchByStarRating(
 
 @Composable
 fun QuestCard(
+    modifier: Modifier = Modifier,
     questItem: QuestItem,
     distToDestination: Double? = null
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clickable(
-                onClick = { /*TODO: add functionality*/ },
-            ),
+            .padding(16.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 15.dp,
             pressedElevation = 5.dp
