@@ -1,14 +1,18 @@
 package com.example.treasurehunt.screens
 
 import android.util.Log
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,21 +24,30 @@ import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExpandedFullScreenSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopSearchBar
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -68,7 +81,7 @@ fun StartGameScreen(
             textStyle = MaterialTheme.typography.bodyMedium,
             placeholder = {
                 Text(
-                    text = "Find Nearby Quests",
+                    text = "Find Nearby Quests By City",
                     color = Color.Gray,
                     style = MaterialTheme.typography.bodyMedium
             )},
@@ -126,10 +139,140 @@ fun StartGameScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            /*TODO: ExpandedFullScreenSearchBar handles results, add other content here*/
+            StartScreenCollapsableItem(
+                title = "Radius"
+            ) {
+                SearchByRadius { searchRadius -> /* Handle radius search */ }
+            }
+
+            StartScreenCollapsableItem(
+                title = "Rating"
+            ) {
+                SearchByStarRating { starRating ->/* Handle rating search */ }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Button(
+                onClick = {
+                    /* Temporarily route to city search
+                    * TODO: hook slider value for ratings and radius
+                    * */
+                    scope.launch { searchBarState.animateToExpanded() }
+                }
+            ) {
+                Text(
+                    text = "Search",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
+    }
+}
+/**
+ *
+ * WIP: A child composable that collapsable content
+ *
+ * @param collapsableContent The current search query.
+ */
+@Composable
+fun StartScreenCollapsableItem(
+    title: String,
+    collapsableContent: @Composable () -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+    ) {
+        var isExpanded by remember { mutableStateOf(false) }
+        val rotationX by animateFloatAsState(
+            targetValue = if (isExpanded) 180f else 0f,
+            animationSpec = tween(durationMillis = 600),
+            label = "FlipChevronIcon"
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(75.dp)
+                .padding(horizontal = 10.dp)
+                .clickable { isExpanded = !isExpanded },
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+
+                )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(R.drawable.chevron_up_24),
+                contentDescription = "chevron icon",
+                modifier = Modifier
+                    .graphicsLayer { this.rotationX = rotationX }
+            )
+        }
+        HorizontalDivider()
+        if (isExpanded) {
+            collapsableContent()
+        }
+    }
+}
+
+@Composable
+fun SearchByRadius(
+    onRadiusSelected: (Float) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var sliderValue by remember { mutableFloatStateOf(0f) }
+        Slider(
+            modifier = Modifier.padding(horizontal = 20.dp),
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            valueRange = 0f..100f
+        )
+        Text(text = "%.1f".format(sliderValue) + "km from current location")
+        onRadiusSelected(sliderValue)
+    }
+}
+
+@Composable
+fun SearchByStarRating(
+    onStarRatingSelected: (Float) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var sliderValue by remember { mutableFloatStateOf(0f) }
+        Slider(
+            modifier = Modifier.padding(horizontal = 20.dp),
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            colors = SliderDefaults.colors(
+                thumbColor = MaterialTheme.colorScheme.secondary,
+                activeTrackColor = MaterialTheme.colorScheme.secondary,
+                inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+            ),
+            valueRange = 0f..5f
+        )
+        Text(text = "Rating: " + "%.1f".format(sliderValue) + " Stars")
+        onStarRatingSelected(sliderValue)
     }
 }
 
