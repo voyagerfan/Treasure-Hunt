@@ -180,11 +180,3 @@ class MainActivity : ComponentActivity() {
         viewModel.updateCoarsePermissionState(isGranted = isCoarseGranted)
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TreasureHuntTheme {
-        TreasureHuntApp()
-    }
-}
