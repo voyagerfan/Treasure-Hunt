@@ -6,7 +6,7 @@ OSU
 CS492
  */
 
-package com.example.treasurehunt.data
+package com.example.treasurehunt.ui.state
 
 import com.example.treasurehunt.model.QuestItem
 

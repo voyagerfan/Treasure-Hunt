@@ -15,12 +15,12 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.treasurehunt.data.PermissionUiState
+import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
-import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestItem
-import com.example.treasurehunt.model.StartGameState
+import com.example.treasurehunt.ui.state.StartGameState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest

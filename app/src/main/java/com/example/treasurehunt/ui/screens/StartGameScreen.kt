@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
