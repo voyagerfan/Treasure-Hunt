@@ -21,6 +21,7 @@ import com.example.treasurehunt.data.PermissionUiState
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
 import com.example.treasurehunt.data.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.Geo
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.StartGameState
 import com.example.treasurehunt.utils.AppUtils
@@ -68,8 +69,6 @@ class TreasureViewModel @Inject constructor(
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
-    private var currentGeo = geo1
-
     init {
         getGreetings()
     }
@@ -92,9 +91,11 @@ class TreasureViewModel @Inject constructor(
                 // calculations and updates
                 attemptCount.intValue += 1
                 val distance = AppUtils.haversine(
-                    destination = currentGeo,
+                    destination = _uiState.value.currentGeo,
                     origin = listOf(getLocation.latitude, getLocation.longitude),
                 )
+                Log.d("currentGeo", "${_uiState.value.currentGeo}")
+                Log.d("origin", "${listOf(getLocation.latitude, getLocation.longitude)}")
                 _currentAttemptQueue.value = ArrayDeque(_currentAttemptQueue.value).apply {
                     addFirst(
                         AttemptList(
@@ -134,6 +135,33 @@ class TreasureViewModel @Inject constructor(
                 currentQuest = quest
             )
         }
+    }
+
+    fun updateGameCompleted(locationFound: Boolean) {
+        _uiState.update {
+            it.copy(
+                isGameCompleted = locationFound
+            )
+        }
+    }
+
+    /*TODO: remove and rely only on questItem going forward*/
+    fun updateCurrentGeoWithQuest(quest:QuestItem) {
+        _uiState.update {
+            it.copy(currentGeo = Geo(
+                dLat = quest.coordinates.first,
+                dLon = quest.coordinates.second
+            ))
+        }
+    }
+
+    fun getAttemptCount(): Int {
+        return attemptCount.intValue
+    }
+
+    fun resetQueue() {
+        _currentAttemptQueue.value.clear()
+        attemptCount.intValue = 0
     }
 
     fun hintClicked() {

@@ -11,7 +11,9 @@ package com.example.treasurehunt.data
 import androidx.annotation.StringRes
 import com.example.treasurehunt.R
 import com.example.treasurehunt.model.Clue
+import com.example.treasurehunt.model.CompletedQuestData
 import com.example.treasurehunt.model.Geo
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.Rule
 
@@ -82,14 +84,23 @@ val questList = listOf(
         clue = "Once a year, a fast motorcycle can be found competing on public roads in what is wildy regarded as the most dangerous race in the world. Where is this motorcycle?",
         hint = "The event is held on an island in the Irish sea",
         coordinates = Pair(54.1672, -4.4780),
-        rating = 3.8
+        rating = 3.8,
+        endGameAssets = CompletedQuestData(
+            questDetail = R.string.ClueDetail1,
+            questPicture = QuestImage.Resource(resId = R.drawable.isleofman)
+        )
     ),
     QuestItem(
         title = "Hollowed from Stone, Raised by Faith",
         description = "Step into silent temples carved deep by hands guided more by spirit than by tools",
         clue = "This rock-hewn church and UNESCO site was built around the 12th century and was of great spiritual importance then and even today. There are 10 more close by. Where is this church?",
         hint = "The oldest human remains known to man share the same country with this church.",
-        coordinates = Pair(12.0317, -39.0411),
-        rating = 4.3
+        coordinates = Pair(12.0317, 39.0411),
+        rating = 4.3,
+        endGameAssets = CompletedQuestData(
+            questDetail = R.string.ClueDetail2,
+            questPicture = QuestImage.Resource(resId = R.drawable.lalibela)
+        )
+
     )
 )

@@ -16,35 +16,45 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.floor
 
 @Composable
-fun TimerScreen(timerValue: Int) {
+fun TimerScreen(
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle? = null,
+    timerValue: Int
+) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.wrapContentSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = formatTime(timerValue), fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            modifier = modifier,
+            style = textStyle ?: MaterialTheme.typography.bodyMedium,
+            text = formatTime(timerValue)
+        )
     }
 }
 
+/**
+ * Calculate the minutes and seconds base on the seconds passed in (time)
+ * Take the floor function to get the actual minutes
+ *
+ * @param time The starting coordinate (latitude and longitude).
+ * @return formatted string of minutes:seconds.
+
+ */
 fun formatTime(time: Int): String {
-/******
-Calculate the minutes and seconds base on the seconds passed in (time)
-Returns a formatted string of minutes:seconds
-
-cast minutes as a double and feed it "time"
-Take the floor function to get the actual minutes
-******/
-
     var minutes: Any = 0.00
     minutes as Double
     minutes = time

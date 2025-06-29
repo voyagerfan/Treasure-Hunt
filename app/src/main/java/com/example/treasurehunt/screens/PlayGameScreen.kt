@@ -1,6 +1,5 @@
 package com.example.treasurehunt.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,8 +41,6 @@ import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.delay
 
-
-@SuppressLint("MutableCollectionMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlayGameScreen(
@@ -62,7 +59,7 @@ fun PlayGameScreen(
                 title = {
                     Text(text = stringResource(R.string.AppTitle))
                 },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                colors = topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             )
@@ -150,14 +147,17 @@ fun PlayGameScreen(
                     modifier = Modifier.height(48.dp)
                 ) {
                     if (locationState !is Response.Idle) {
-                        when (val currentState = locationState) {
+                        when (locationState) {
                             is Response.Loading -> CircularProgressIndicator()
                             is Response.Success -> {
                                 TimedResponse(
                                     displayTime = 3000,
-                                    message = "Current Distance: ${currentState.data}"
+                                    message = "Current Distance: ${locationState.data}"
                                 ) { isFinished ->
-                                    if (isFinished) {
+                                    if (isFinished && locationState.data <= 0.25) {
+                                        viewModel.pauseTimer()
+                                        viewModel.updateGameCompleted(true)
+                                    } else {
                                         timedResponseComplete = true
                                         viewModel.updateLoadingStateToIdle()
                                     }

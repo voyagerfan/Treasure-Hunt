@@ -29,12 +29,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.data.ScreenList
 import com.example.treasurehunt.screens.AchievementsScreen
+import com.example.treasurehunt.screens.EndGameScreen
 import com.example.treasurehunt.screens.HomeScreen
 import com.example.treasurehunt.screens.OnboardingScreen
 import com.example.treasurehunt.screens.PlayGameScreen
 import com.example.treasurehunt.screens.RuleScreen
 import com.example.treasurehunt.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
+import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -55,6 +57,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
+                    val timerValue by viewModel.timer.collectAsState()
+                    val treasureUiState by viewModel.uiState.collectAsState()
+
                     NavHost(navController = navController, startDestination = ScreenList.ONBOARDING.name) {
                         composable(route = ScreenList.ONBOARDING.name) {
                             OnboardingScreen(
@@ -78,16 +83,18 @@ class MainActivity : ComponentActivity() {
                             StartGameScreen(
                                 onBackArrowPressed = {navController.navigate(route = ScreenList.HOME_SCREEN.name) }
                             ) { userSelectedQuest ->
+                                viewModel.updateCurrentGeoWithQuest(userSelectedQuest)
                                 viewModel.updateUserQuest(userSelectedQuest)
                                 navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
                             }
                         }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
-                            val timerValue by viewModel.timer.collectAsState()
-                            val treasureUiState by viewModel.uiState.collectAsState()
                             val locationState by viewModel.locationLoadingState.collectAsState()
+
+                            if(treasureUiState.isGameCompleted) { navController.navigate(route = ScreenList.END_GAME_SCREEN.name) }
                             PlayGameScreen(
                                 locationState = locationState,
+                                treasureUIstate = treasureUiState,
                                 viewModel = viewModel,
                                 onFoundItClick = {
                                     if (viewModel.locationLoadingState.value is Response.Idle) {
@@ -98,7 +105,6 @@ class MainActivity : ComponentActivity() {
                                 onHintClick = {
                                     viewModel.hintClicked()
                                 },
-                                treasureUIstate = treasureUiState,
                                 timerView = {
                                     TimerScreen(timerValue = timerValue)
                                 },
@@ -106,6 +112,25 @@ class MainActivity : ComponentActivity() {
                                     viewModel.stopTimer()
                                     navController.navigate(route = ScreenList.HOME_SCREEN.name)
                                 }
+                            )
+                        }
+                        composable(route = ScreenList.END_GAME_SCREEN.name) {
+                            EndGameScreen(
+                                treasureUIstate = treasureUiState,
+                                elapsedTime = timerValue,
+                                attemptCount = viewModel.getAttemptCount(),
+                                distance = AppUtils.haversine(
+                                    destination = treasureUiState.currentGeo,
+                                    origin = treasureUiState.currentLoc
+                                ),
+                                onHomeClick = {
+                                    viewModel.updateGameCompleted(false)
+                                    viewModel.stopTimer()
+                                    viewModel.resetQueue()
+                                    viewModel.updateLoadingStateToIdle()
+                                    navController.navigate(route = ScreenList.HOME_SCREEN.name)
+                                },
+
                             )
                         }
                     }

@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.data.DataSource
 import com.example.treasurehunt.model.Rule
-
+@Deprecated("Screen flow is routing from /screens")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartScreen(onStartClick: () -> Unit) {

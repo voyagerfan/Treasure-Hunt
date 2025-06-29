@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TimerScreen
 import com.example.treasurehunt.data.TreasureUiState
-
+@Deprecated("Screen flow is routing from /screens")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClueScreen(
