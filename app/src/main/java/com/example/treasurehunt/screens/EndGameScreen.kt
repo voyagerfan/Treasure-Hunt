@@ -72,12 +72,10 @@ fun EndGameScreen(
                         onClick = onHomeClick,
                         modifier = Modifier
                             .padding(bottom = 2.dp)
-
                     ) {
                         Text("HOME")
                     }
                 }
-
             }
         }
     ) { innerPadding ->
@@ -101,10 +99,10 @@ fun EndGameScreen(
             treasureUIstate.currentQuest?.endGameAssets?.let {
                 Text(
                     text = stringResource(it.questDetail),
-                    textAlign = TextAlign.Center
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = 10.dp)
                 )
             }
-
 
             Box {
                 val questImage = treasureUIstate.currentQuest?.endGameAssets?.questPicture

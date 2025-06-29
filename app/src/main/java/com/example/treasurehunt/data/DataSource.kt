@@ -101,6 +101,5 @@ val questList = listOf(
             questDetail = R.string.ClueDetail2,
             questPicture = QuestImage.Resource(resId = R.drawable.lalibela)
         )
-
     )
 )
