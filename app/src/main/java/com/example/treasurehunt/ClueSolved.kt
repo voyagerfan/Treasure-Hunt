@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.data.TreasureUiState
 
+@Deprecated("Screen flow is routing from /screens")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClueSolvedScreen(

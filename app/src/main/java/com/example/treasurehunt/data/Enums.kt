@@ -6,5 +6,6 @@ enum class ScreenList {
     HOME_SCREEN,
     ACHIEVEMENTS_SCREEN,
     START_SCREEN,
-    PLAY_GAME_SCREEN
+    PLAY_GAME_SCREEN,
+    END_GAME_SCREEN
 }

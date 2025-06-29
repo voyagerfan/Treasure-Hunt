@@ -22,7 +22,8 @@ data class TreasureUiState(
     val currentClue: Clue = DataSource.clue1,
     val currentGeo: Geo = DataSource.geo1,
     val currentLoc: MutableList<Double> = mutableListOf(0.0, 0.0),
-    val currentQuest: QuestItem? = null
+    val currentQuest: QuestItem? = null,
+    val isGameCompleted: Boolean = false
 )
 
 data class PermissionUiState(

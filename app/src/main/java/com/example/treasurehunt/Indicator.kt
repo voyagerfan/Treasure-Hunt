@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.dp
  * Citation:
  * https://stackoverflow.com/questions/73966501/circular-loading-spinner-in-jetpack-compose
  */
-
+@Deprecated(message = "Loading screen is no longer being used with the main screen")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoadingScreen() {
