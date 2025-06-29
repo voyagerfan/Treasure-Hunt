@@ -122,7 +122,7 @@ fun RuleItem(rule: Rule) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(rule.rule_number),
+                text = stringResource(rule.ruleNumber),
                 fontWeight = FontWeight.Bold,
                 fontFamily = catamaranFamily,
                 fontSize = 17.sp
@@ -131,7 +131,7 @@ fun RuleItem(rule: Rule) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
-                text = stringResource(rule.rule_text),
+                text = stringResource(rule.ruleText),
                 fontWeight = FontWeight.Bold,
                 fontFamily = catamaranFamily,
                 fontSize = 20.sp,

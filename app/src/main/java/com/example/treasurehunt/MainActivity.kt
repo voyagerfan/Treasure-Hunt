@@ -17,11 +17,9 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
@@ -83,7 +81,6 @@ class MainActivity : ComponentActivity() {
                             StartGameScreen(
                                 onBackArrowPressed = {navController.navigate(route = ScreenList.HOME_SCREEN.name) }
                             ) { userSelectedQuest ->
-                                viewModel.updateCurrentGeoWithQuest(userSelectedQuest)
                                 viewModel.updateUserQuest(userSelectedQuest)
                                 navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
                             }
@@ -120,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                 elapsedTime = timerValue,
                                 attemptCount = viewModel.getAttemptCount(),
                                 distance = AppUtils.haversine(
-                                    destination = treasureUiState.currentGeo,
+                                    destination = treasureUiState.currentQuest!!.coordinates,
                                     origin = treasureUiState.currentLoc
                                 ),
                                 onHomeClick = {

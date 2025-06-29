@@ -185,10 +185,7 @@ fun PreviewEndGamesScreen() {
     TreasureHuntTheme {
         EndGameScreen (
             treasureUIstate = TreasureUiState(
-                isShowingHomePage = true,
                 showHint = false,
-                currentClue = DataSource.clue1,
-                currentGeo = DataSource.geo1,
                 currentQuest = questList[0]
             ),
             distance = 0.2,

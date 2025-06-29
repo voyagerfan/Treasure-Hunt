@@ -10,9 +10,8 @@ package com.example.treasurehunt.data
 
 import androidx.annotation.StringRes
 import com.example.treasurehunt.R
-import com.example.treasurehunt.model.Clue
 import com.example.treasurehunt.model.CompletedQuestData
-import com.example.treasurehunt.model.Geo
+import com.example.treasurehunt.model.Coordinate
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.Rule
@@ -22,21 +21,6 @@ DataSource object to start all of the data
  */
 
 object DataSource {
-    val clue1 = Clue(
-        clueText = R.string.cluetext1,
-        clueHint = R.string.cluehint1,
-        clueDetail = R.string.ClueDetail1,
-        picture = R.drawable.isleofman,
-        clueNumber = 1
-    )
-
-    val clue2 = Clue(
-        clueText = R.string.cluetext2,
-        clueHint = R.string.cluehint2,
-        clueDetail = R.string.ClueDetail2,
-        picture = R.drawable.lalibela,
-        clueNumber = 2
-    )
 
     fun loadRules(): List<Rule> {
         return listOf<Rule>(
@@ -51,19 +35,6 @@ object DataSource {
             Rule(R.string.rule9, R.string.rule9_text)
         )
     }
-
-    // Isle of man Grand Stand
-
-    val geo1 = Geo(
-        dLat = 54.1672,
-        dLon = -4.4780
-    )
-    // Lalibela, church of St George
-
-    val geo2 = Geo(
-        dLat = 12.0317,
-        dLon = 39.0411
-    )
 }
 
 data class PermissionRationale(
@@ -83,7 +54,7 @@ val questList = listOf(
         description = "Feel the thunder of fearless riders chasing time along a road that bends reality.",
         clue = "Once a year, a fast motorcycle can be found competing on public roads in what is wildy regarded as the most dangerous race in the world. Where is this motorcycle?",
         hint = "The event is held on an island in the Irish sea",
-        coordinates = Pair(54.1672, -4.4780),
+        coordinates = Coordinate(54.1672, -4.4780),
         rating = 3.8,
         endGameAssets = CompletedQuestData(
             questDetail = R.string.ClueDetail1,
@@ -95,7 +66,7 @@ val questList = listOf(
         description = "Step into silent temples carved deep by hands guided more by spirit than by tools",
         clue = "This rock-hewn church and UNESCO site was built around the 12th century and was of great spiritual importance then and even today. There are 10 more close by. Where is this church?",
         hint = "The oldest human remains known to man share the same country with this church.",
-        coordinates = Pair(12.0317, 39.0411),
+        coordinates = Coordinate(12.0317, 39.0411),
         rating = 4.3,
         endGameAssets = CompletedQuestData(
             questDetail = R.string.ClueDetail2,

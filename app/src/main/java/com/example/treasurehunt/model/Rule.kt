@@ -14,6 +14,6 @@ import androidx.annotation.StringRes
 Data class to store the rule number and rule text. Used on the start page
  */
 data class Rule(
-    @StringRes val rule_number: Int,
-    @StringRes val rule_text: Int
+    @StringRes val ruleNumber: Int,
+    @StringRes val ruleText: Int
 )

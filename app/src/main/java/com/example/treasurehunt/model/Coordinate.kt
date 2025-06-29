@@ -1,5 +1,5 @@
 /*
-Geo.kt
+Coordinate.kt
 
 Lamar Petty
 OSU
@@ -13,7 +13,7 @@ package com.example.treasurehunt.model
  * for the destination (preset)
  */
 
-data class Geo(
-    val dLat: Double,
-    val dLon: Double
+data class Coordinate(
+    val latitude: Double,
+    val longitude: Double
 )

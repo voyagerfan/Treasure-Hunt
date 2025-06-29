@@ -7,7 +7,7 @@ import com.example.treasurehunt.GetGreetingQuery
 
 data class StartGameState(
     val greetings: List<GetGreetingQuery.Greeting?>? = null,
-    val currentLocation: Pair<Double, Double>? = null,
+    val currentLocation: Coordinate? = null,
     val questRadius: Double? = null,
     val questList: List<QuestItem>? = null
 )
@@ -17,7 +17,7 @@ data class QuestItem(
     val description: String,
     val clue: String,
     val hint: String,
-    val coordinates: Pair<Double, Double>,
+    val coordinates: Coordinate,
     val rating: Double,
     val endGameAssets: CompletedQuestData
 )
