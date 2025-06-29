@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DropdownMenu

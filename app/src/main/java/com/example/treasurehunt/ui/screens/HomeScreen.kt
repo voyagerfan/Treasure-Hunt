@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -45,7 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TreasureViewModel
-import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.graphQLClient
 

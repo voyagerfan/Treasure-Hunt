@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TreasureViewModel
-import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.ui.theme.catamaranFamily
 import com.example.treasurehunt.utils.Response

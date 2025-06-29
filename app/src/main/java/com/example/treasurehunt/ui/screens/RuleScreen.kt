@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.DataSource
-import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.model.Rule
 import com.example.treasurehunt.ui.theme.catamaranFamily
 
@@ -122,7 +122,7 @@ fun RuleItem(rule: Rule) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(rule.rule_number),
+                text = stringResource(rule.ruleNumber),
                 fontWeight = FontWeight.Bold,
                 fontFamily = catamaranFamily,
                 fontSize = 17.sp
@@ -131,7 +131,7 @@ fun RuleItem(rule: Rule) {
             Text(
                 modifier = Modifier
                     .padding(horizontal = 8.dp),
-                text = stringResource(rule.rule_text),
+                text = stringResource(rule.ruleText),
                 fontWeight = FontWeight.Bold,
                 fontFamily = catamaranFamily,
                 fontSize = 20.sp,

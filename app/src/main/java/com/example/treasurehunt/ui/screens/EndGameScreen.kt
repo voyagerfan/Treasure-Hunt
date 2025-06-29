@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -26,13 +26,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TimerScreen
-import com.example.treasurehunt.data.DataSource
-import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.data.questList
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
@@ -185,10 +183,7 @@ fun PreviewEndGamesScreen() {
     TreasureHuntTheme {
         EndGameScreen (
             treasureUIstate = TreasureUiState(
-                isShowingHomePage = true,
                 showHint = false,
-                currentClue = DataSource.clue1,
-                currentGeo = DataSource.geo1,
                 currentQuest = questList[0]
             ),
             distance = 0.2,

@@ -1,4 +1,4 @@
-package com.example.treasurehunt.screens
+package com.example.treasurehunt.ui.screens
 
 import android.Manifest
 import androidx.activity.ComponentActivity
@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.treasurehunt.TreasureViewModel
-import com.example.treasurehunt.data.ScreenList
+import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.data.rationale
 
 @Composable

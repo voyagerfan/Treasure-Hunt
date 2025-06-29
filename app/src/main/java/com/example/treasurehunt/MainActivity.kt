@@ -17,24 +17,22 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.treasurehunt.data.ScreenList
-import com.example.treasurehunt.screens.AchievementsScreen
-import com.example.treasurehunt.screens.EndGameScreen
-import com.example.treasurehunt.screens.HomeScreen
-import com.example.treasurehunt.screens.OnboardingScreen
-import com.example.treasurehunt.screens.PlayGameScreen
-import com.example.treasurehunt.screens.RuleScreen
-import com.example.treasurehunt.screens.StartGameScreen
+import com.example.treasurehunt.ui.ScreenList
+import com.example.treasurehunt.ui.screens.AchievementsScreen
+import com.example.treasurehunt.ui.screens.EndGameScreen
+import com.example.treasurehunt.ui.screens.HomeScreen
+import com.example.treasurehunt.ui.screens.OnboardingScreen
+import com.example.treasurehunt.ui.screens.PlayGameScreen
+import com.example.treasurehunt.ui.screens.RuleScreen
+import com.example.treasurehunt.ui.screens.StartGameScreen
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
@@ -83,7 +81,6 @@ class MainActivity : ComponentActivity() {
                             StartGameScreen(
                                 onBackArrowPressed = {navController.navigate(route = ScreenList.HOME_SCREEN.name) }
                             ) { userSelectedQuest ->
-                                viewModel.updateCurrentGeoWithQuest(userSelectedQuest)
                                 viewModel.updateUserQuest(userSelectedQuest)
                                 navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
                             }
@@ -120,7 +117,7 @@ class MainActivity : ComponentActivity() {
                                 elapsedTime = timerValue,
                                 attemptCount = viewModel.getAttemptCount(),
                                 distance = AppUtils.haversine(
-                                    destination = treasureUiState.currentGeo,
+                                    destination = treasureUiState.currentQuest!!.coordinates,
                                     origin = treasureUiState.currentLoc
                                 ),
                                 onHomeClick = {
@@ -178,13 +175,5 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
         viewModel.updateCoarsePermissionState(isGranted = isCoarseGranted)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TreasureHuntTheme {
-        TreasureHuntApp()
     }
 }

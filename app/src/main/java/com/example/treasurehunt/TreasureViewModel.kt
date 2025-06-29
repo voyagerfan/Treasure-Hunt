@@ -15,15 +15,12 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.treasurehunt.data.DataSource
-import com.example.treasurehunt.data.DataSource.geo1
-import com.example.treasurehunt.data.PermissionUiState
+import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
-import com.example.treasurehunt.data.TreasureUiState
+import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.model.AttemptList
-import com.example.treasurehunt.model.Geo
 import com.example.treasurehunt.model.QuestItem
-import com.example.treasurehunt.model.StartGameState
+import com.example.treasurehunt.ui.state.StartGameState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
 import com.google.android.gms.location.CurrentLocationRequest
@@ -91,11 +88,9 @@ class TreasureViewModel @Inject constructor(
                 // calculations and updates
                 attemptCount.intValue += 1
                 val distance = AppUtils.haversine(
-                    destination = _uiState.value.currentGeo,
+                    destination = _uiState.value.currentQuest!!.coordinates,
                     origin = listOf(getLocation.latitude, getLocation.longitude),
                 )
-                Log.d("currentGeo", "${_uiState.value.currentGeo}")
-                Log.d("origin", "${listOf(getLocation.latitude, getLocation.longitude)}")
                 _currentAttemptQueue.value = ArrayDeque(_currentAttemptQueue.value).apply {
                     addFirst(
                         AttemptList(
@@ -145,16 +140,6 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    /*TODO: remove and rely only on questItem going forward*/
-    fun updateCurrentGeoWithQuest(quest:QuestItem) {
-        _uiState.update {
-            it.copy(currentGeo = Geo(
-                dLat = quest.coordinates.first,
-                dLon = quest.coordinates.second
-            ))
-        }
-    }
-
     fun getAttemptCount(): Int {
         return attemptCount.intValue
     }
@@ -177,34 +162,6 @@ class TreasureViewModel @Inject constructor(
                     showHint = false
                 )
             }
-        }
-    }
-
-    fun updateClueAndGeo() {
-        _uiState.update {
-            it.copy(
-                currentClue = DataSource.clue2,
-                currentGeo = DataSource.geo2
-            )
-        }
-    }
-
-    fun updateCurrentLoc(
-        lat: Double,
-        lon: Double
-    ) {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(lat, lon)
-            )
-        }
-    }
-
-    fun resetCurrentLoc() {
-        _uiState.update {
-            it.copy(
-                currentLoc = mutableListOf(0.0, 0.0)
-            )
         }
     }
 
@@ -263,6 +220,17 @@ class TreasureViewModel @Inject constructor(
         _permissions.update {
             it.copy(
                 permissionDenialCount = uiStatePermissions.value.permissionDenialCount + 1
+            )
+        }
+    }
+
+    private fun updateCurrentLoc(
+        lat: Double,
+        lon: Double
+    ) {
+        _uiState.update {
+            it.copy(
+                currentLoc = mutableListOf(lat, lon)
             )
         }
     }

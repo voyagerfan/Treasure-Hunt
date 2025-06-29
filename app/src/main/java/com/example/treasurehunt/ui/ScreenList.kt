@@ -1,4 +1,4 @@
-package com.example.treasurehunt.data
+package com.example.treasurehunt.ui
 
 enum class ScreenList {
     ONBOARDING,
