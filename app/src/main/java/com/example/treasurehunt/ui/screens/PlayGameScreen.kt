@@ -163,7 +163,12 @@ fun PlayGameScreen(
                                     }
                                 }
                             }
-                            else -> {}
+                            is Response.Error -> {
+                                when(locationState.exception) {
+                                    is IllegalStateException -> { /*TODO: Handle failed location request*/}
+                                    is IllegalArgumentException -> { /*TODO: Handle incorrect coordinate range*/}
+                                }
+                            }
                         }
                     } else {
                         viewModel.startTimer()
