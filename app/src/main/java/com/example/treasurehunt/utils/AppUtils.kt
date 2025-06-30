@@ -11,7 +11,7 @@ object AppUtils {
         // origin[0] = origin latitude
         // origin[1] = origin longitude
         require(destination.latitude in -90.0..90.0) { "Latitude or Longitude value out of range" }
-        require(destination.longitude in -180.0..180.0) { "Latitude or Longitude value of out range" }
+        require(destination.longitude in -180.0..180.0) { "Latitude or Longitude value out of range" }
 
         val earthRadiusKm = 6372.8
 
