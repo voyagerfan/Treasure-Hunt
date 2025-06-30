@@ -101,8 +101,18 @@ class TreasureViewModel @Inject constructor(
                 }
                 _locationLoadingState.value = Response.Success(data = distance)
             } catch (e: Exception) {
-                _locationLoadingState.value = Response.Error(exception = e)
                 logStackTrace(e)
+                when(e) {
+                    is IllegalStateException -> {
+                        _locationLoadingState.value = Response.Error(exception = e)
+                    }
+                    is IllegalArgumentException -> {
+                        _locationLoadingState.value = Response.Error(exception = e)
+                    }
+                    else -> {
+                        throw e
+                    }
+                }
             }
         }
     }
