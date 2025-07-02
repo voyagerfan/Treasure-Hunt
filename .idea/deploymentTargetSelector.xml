@@ -22,6 +22,12 @@
       <SelectionState runConfigName="haversine_throwsIllegalArgumentException_withRandomOutOfRange()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="calculateDistance_returnsKnownValue()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="calculateForwardAndReverseDistance_isSymmetric()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
