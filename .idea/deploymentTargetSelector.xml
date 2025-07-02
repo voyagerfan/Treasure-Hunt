@@ -13,16 +13,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="TestStartRating">
+      <SelectionState runConfigName="calculateDistance_returnsExpectedValue()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="ViewQuestCard">
+      <SelectionState runConfigName="calculateDistance_returnGreaterOrEqualToZero()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="previewCompleted">
+      <SelectionState runConfigName="haversine_throwsIllegalArgumentException_withRandomOutOfRange()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PreviewEndGamesScreen">
+      <SelectionState runConfigName="calculateDistance_returnsKnownValue()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="calculateForwardAndReverseDistance_isSymmetric()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

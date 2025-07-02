@@ -96,6 +96,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0-RC2")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.23")
     androidTestImplementation("androidx.core:core-animation-testing:1.0.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -103,4 +104,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(kotlin("test"))
 }
