@@ -2,7 +2,9 @@ package com.example.treasurehunt.di
 
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.network.okHttpClient
+import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.data.TreasureHuntGraphQLService
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +30,7 @@ object GraphQLModule {
     }
 
     @Provides
-    fun provideGraphQLService(apolloClient: ApolloClient): TreasureHuntGraphQLService  {
+    fun provideGraphQLService(apolloClient: ApolloClient): GraphQLApi {
         return TreasureHuntGraphQLService(apolloClient)
     }
 }
