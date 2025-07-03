@@ -13,19 +13,13 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="calculateDistance_returnsExpectedValue()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="calculateDistance_returnGreaterOrEqualToZero()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="haversine_throwsIllegalArgumentException_withRandomOutOfRange()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="calculateDistance_returnsKnownValue()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="calculateForwardAndReverseDistance_isSymmetric()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="HaversineUnitTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="calculateRandomDistance_returnGreaterOrEqualToZero()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

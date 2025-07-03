@@ -1,6 +1,5 @@
 package com.example.treasurehunt
 
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.treasurehunt.model.Coordinate
 import com.example.treasurehunt.utils.AppUtils
 import org.junit.Assert.assertTrue
@@ -114,7 +113,6 @@ class HaversineSymmetryParameterizedTest(
     }
 }
 
-@RunWith(AndroidJUnit4::class)
 class HaversineUnitTest {
 
     /**
