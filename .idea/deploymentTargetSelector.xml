@@ -13,9 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="calculateForwardAndReverseDistance_isSymmetric()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="HaversineUnitTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
