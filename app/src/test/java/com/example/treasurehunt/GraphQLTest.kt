@@ -1,35 +1,56 @@
 package com.example.treasurehunt
 
-import android.content.Context
 import com.example.treasurehunt.data.GraphQLApi
-import com.google.android.gms.location.CurrentLocationRequest
-import com.google.android.gms.location.FusedLocationProviderClient
-import kotlinx.coroutines.test.runTest
-import org.junit.Test
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GraphQLGreetingTest {
-    @OptIn(ExperimentalCoroutinesApi::class)
+
+    private val testDispatcher = StandardTestDispatcher()
+
+    @Before
+    fun setup() {
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
     @Test
-    fun loadedGreetings_match_expected_values() = runTest {
+    fun getGreetings_withValidResponse_updatesStateCorrectly() = runTest {
+        /**
+         * Given a valid server response, this test verifies that the viewModel
+         * state is updated.
+         */
         val mockApi = mockk<GraphQLApi>()
-        val mockGreeting = mockk<GetGreetingQuery.Greeting>()
-        val mockGreetings = listOf(mockGreeting)
-        coEvery { mockApi.fetchGreetings() } returns mockGreetings
+        val mockGreeting = listOf(GetGreetingQuery.Greeting(
+                title = "Hello",
+                subtitle = "World"
+        ))
+        coEvery { mockApi.fetchGreetings() } returns mockGreeting
 
         val viewModel = TreasureViewModel(
-            applicationContext = mockk<Context>(),
-            fusedLocationClient = mockk<FusedLocationProviderClient>(),
-            locationRequest = mockk<CurrentLocationRequest>(),
+            applicationContext = mockk(relaxed = true),
+            fusedLocationClient = mockk(relaxed = true),
+            locationRequest = mockk(relaxed = true),
             apolloClient = mockApi
         )
 
         viewModel.getGreetings()
-        advanceUntilIdle()
-
-        assertEquals(mockGreetings, viewModel.gameStartScreenState.value.greetings)
+        testScheduler.advanceUntilIdle()
+        assertEquals(mockGreeting, viewModel.gameStartScreenState.value.greetings)
     }
 }
