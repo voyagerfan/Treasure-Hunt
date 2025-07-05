@@ -23,6 +23,7 @@ import com.example.treasurehunt.ui.state.StartGameState
 import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
+import com.example.treasurehunt.utils.toResponse
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.CancellationTokenSource

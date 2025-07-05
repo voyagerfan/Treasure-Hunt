@@ -1,8 +1,10 @@
 package com.example.treasurehunt
 
 import com.apollographql.apollo.api.ApolloResponse
+import com.apollographql.apollo.exception.ApolloException
 import com.example.treasurehunt.data.GraphQLApi
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,10 +22,25 @@ import kotlin.test.assertContentEquals
 class GraphQLGreetingTest {
 
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var greetingsList: List<GetGreetingQuery.Greeting>
+    private lateinit var myQueryData: GetGreetingQuery.Data
+    private lateinit var mockApi: GraphQLApi
+    private lateinit var viewModel: TreasureViewModel
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+        greetingsList = listOf(
+            GetGreetingQuery.Greeting(title = "Hello", subtitle = "World")
+        )
+        myQueryData = GetGreetingQuery.Data(greetings = greetingsList)
+        mockApi = mockk<GraphQLApi>()
+        viewModel = TreasureViewModel(
+            applicationContext = mockk(relaxed = true),
+            fusedLocationClient = mockk(relaxed = true),
+            locationRequest = mockk(relaxed = true),
+            apolloClient = mockApi
+        )
     }
 
     @After
@@ -37,25 +54,30 @@ class GraphQLGreetingTest {
          * Given a valid server response, this test verifies that the viewModel
          * state is updated.
          */
-        val greetingsList = listOf(
-            GetGreetingQuery.Greeting(title = "Hello", subtitle = "World")
-        )
-        val myQueryData = GetGreetingQuery.Data(greetings = greetingsList)
-        val mockApi = mockk<GraphQLApi>()
+
         val successResponse = ApolloResponse.Builder(GetGreetingQuery(), UUID.randomUUID())
             .data(myQueryData)
             .build()
         coEvery { mockApi.fetchGreetings() } returns successResponse
-
-        val viewModel = TreasureViewModel(
-            applicationContext = mockk(relaxed = true),
-            fusedLocationClient = mockk(relaxed = true),
-            locationRequest = mockk(relaxed = true),
-            apolloClient = mockApi
-        )
-
         viewModel.getGreetings()
         testScheduler.advanceUntilIdle()
         assertContentEquals(successResponse.data?.greetings, viewModel.gameStartScreenState.value.greetings)
+    }
+
+    /* WIP */
+    @Test
+    fun getGreetings_withException_isHandled() = runTest {
+        /**
+         * Given a exception from the server, this test verifies that the viewModel
+         * handles it gracefully.
+         */
+        val mockException = mockk<ApolloException>(relaxed = true)
+        val exceptionResponse = ApolloResponse.Builder(GetGreetingQuery(), UUID.randomUUID())
+            .exception(exception = mockException)
+            .build()
+        coEvery { mockApi.fetchGreetings() } returns exceptionResponse
+        viewModel.getGreetings()
+        testScheduler.advanceUntilIdle()
+        // assertContentEquals(ApolloException, /*check some update*/)
     }
 }
