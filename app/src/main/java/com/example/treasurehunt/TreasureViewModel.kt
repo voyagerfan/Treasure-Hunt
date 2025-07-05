@@ -127,9 +127,19 @@ class TreasureViewModel @Inject constructor(
 
     fun getGreetings() {
         viewModelScope.launch {
-            val fetchedGreetings = apolloClient.fetchGreetings().let { it?.filterNotNull()} ?: emptyList()
-            _gameStartScreenState.update {
-                it.copy(greetings = fetchedGreetings)
+            val fetchedGreetings = apolloClient.fetchGreetings()
+            when {
+                fetchedGreetings.hasErrors() && !fetchedGreetings.data?.greetings.isNullOrEmpty() -> {
+                    // fail partial data gracefully
+                }
+                fetchedGreetings.exception != null -> {
+                   // fail exception gracefully
+                }
+                !fetchedGreetings.hasErrors() -> {
+                    _gameStartScreenState.update {
+                        it.copy(greetings = fetchedGreetings.data?.greetings ?: emptyList())
+                    }
+                }
             }
         }
     }

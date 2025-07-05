@@ -1,5 +1,6 @@
 package com.example.treasurehunt
 
+import com.apollographql.apollo.api.ApolloResponse
 import com.example.treasurehunt.data.GraphQLApi
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -10,9 +11,10 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.util.UUID
+import kotlin.test.assertContentEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GraphQLGreetingTest {
@@ -35,12 +37,15 @@ class GraphQLGreetingTest {
          * Given a valid server response, this test verifies that the viewModel
          * state is updated.
          */
+        val greetingsList = listOf(
+            GetGreetingQuery.Greeting(title = "Hello", subtitle = "World")
+        )
+        val myQueryData = GetGreetingQuery.Data(greetings = greetingsList)
         val mockApi = mockk<GraphQLApi>()
-        val mockGreeting = listOf(GetGreetingQuery.Greeting(
-                title = "Hello",
-                subtitle = "World"
-        ))
-        coEvery { mockApi.fetchGreetings() } returns mockGreeting
+        val successResponse = ApolloResponse.Builder(GetGreetingQuery(), UUID.randomUUID())
+            .data(myQueryData)
+            .build()
+        coEvery { mockApi.fetchGreetings() } returns successResponse
 
         val viewModel = TreasureViewModel(
             applicationContext = mockk(relaxed = true),
@@ -51,6 +56,6 @@ class GraphQLGreetingTest {
 
         viewModel.getGreetings()
         testScheduler.advanceUntilIdle()
-        assertEquals(mockGreeting, viewModel.gameStartScreenState.value.greetings)
+        assertContentEquals(successResponse.data?.greetings, viewModel.gameStartScreenState.value.greetings)
     }
 }
