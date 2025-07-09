@@ -15,14 +15,15 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.treasurehunt.ui.state.PermissionUiState
-import com.example.treasurehunt.data.TreasureHuntGraphQLService
-import com.example.treasurehunt.ui.state.TreasureUiState
+import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestItem
+import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.ui.state.StartGameState
+import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.utils.AppUtils
 import com.example.treasurehunt.utils.Response
+import com.example.treasurehunt.utils.toResponse
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -44,7 +45,7 @@ class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
     private val locationRequest: CurrentLocationRequest,
-    private val apolloClient: TreasureHuntGraphQLService
+    private val apolloClient: GraphQLApi
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
@@ -127,9 +128,19 @@ class TreasureViewModel @Inject constructor(
 
     fun getGreetings() {
         viewModelScope.launch {
-            val fetchedGreetings = apolloClient.fetchGreetings().let { it?.filterNotNull()} ?: emptyList()
-            _gameStartScreenState.update {
-                it.copy(greetings = fetchedGreetings)
+            val fetchedGreetings = apolloClient.fetchGreetings()
+            when {
+                fetchedGreetings.hasErrors() && !fetchedGreetings.data?.greetings.isNullOrEmpty() -> {
+                    // fail partial data gracefully
+                }
+                fetchedGreetings.exception != null -> {
+                   // fail exception gracefully
+                }
+                !fetchedGreetings.hasErrors() -> {
+                    _gameStartScreenState.update {
+                        it.copy(greetings = fetchedGreetings.data?.greetings ?: emptyList())
+                    }
+                }
             }
         }
     }

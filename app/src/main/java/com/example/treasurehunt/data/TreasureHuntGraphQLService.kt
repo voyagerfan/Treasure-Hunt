@@ -1,16 +1,17 @@
 package com.example.treasurehunt.data
 
-import android.util.Log
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.ApolloResponse
 import com.example.treasurehunt.GetGreetingQuery
+import javax.inject.Inject
 
-class TreasureHuntGraphQLService (private val apolloClient: ApolloClient) {
+interface GraphQLApi {
+    suspend fun fetchGreetings(): ApolloResponse<GetGreetingQuery.Data>
+}
 
-    suspend fun fetchGreetings(): List<GetGreetingQuery.Greeting?>? {
-        val response = apolloClient.query(GetGreetingQuery()).execute()
+class TreasureHuntGraphQLService @Inject constructor(private val apolloClient: ApolloClient): GraphQLApi {
 
-        Log.d("GraphQL", "Errors: ${response.errors}")
-        Log.d("GraphQL", "Data: ${response.data}")
-        return response.data?.greetings
+    override suspend fun fetchGreetings(): ApolloResponse<GetGreetingQuery.Data> {
+        return apolloClient.query(GetGreetingQuery()).execute()
     }
 }

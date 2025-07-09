@@ -4,6 +4,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
     id("com.apollographql.apollo") version "4.2.0"
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 apollo {
@@ -71,9 +72,9 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0-beta02")
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
     implementation("androidx.media3:media3-common-ktx:1.6.0")
-    ksp("com.google.dagger:dagger-compiler:2.48") // Dagger compiler
-    ksp("com.google.dagger:hilt-compiler:2.48")
-    implementation("com.google.dagger:hilt-android:2.50")
+    ksp("com.google.dagger:dagger-compiler:2.56.2") // Dagger compiler
+    ksp("com.google.dagger:hilt-compiler:2.56.2")
+    implementation("com.google.dagger:hilt-android:2.56.2")
     implementation("androidx.core:core-ktx:1.16.0")
     implementation("androidx.core:core:1.15.0")
     implementation("androidx.core:core-role:1.1.0")
@@ -95,8 +96,16 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0-RC2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.23")
+    testImplementation("io.mockk:mockk:1.14.4")
+    testImplementation("io.mockk:mockk-android:1.14.4")
+    testImplementation("io.mockk:mockk-agent:1.14.4")
+    testImplementation("com.google.dagger:hilt-android-testing:2.56.2")
+    testAnnotationProcessor("com.google.dagger:hilt-compiler:2.56.2")
+    androidTestAnnotationProcessor("com.google.dagger:hilt-compiler:2.56.2")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
     androidTestImplementation("androidx.core:core-animation-testing:1.0.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
