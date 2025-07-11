@@ -214,8 +214,14 @@ fun StartScreenCollapsableItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-
-                )
+            )
+            Icon(
+                painter = painterResource(R.drawable.checkmark_24dp),
+                contentDescription = "check mark",
+                tint = Color.Green,
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            )
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(R.drawable.chevron_up_24),
@@ -434,4 +440,12 @@ fun ViewQuestCard() {
         questItem = questList[0],
         distToDestination = 1000.0
     )
+}
+
+@Preview
+@Composable
+fun ViewSearchCardDropDown() {
+    StartScreenCollapsableItem(
+        title = "Test Title"
+    ) { /* no drop down content */}
 }
