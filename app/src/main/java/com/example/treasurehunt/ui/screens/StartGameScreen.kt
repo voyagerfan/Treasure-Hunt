@@ -47,6 +47,7 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,8 @@ fun StartGameScreen(
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
+    var searchByRadius by rememberSaveable { mutableFloatStateOf(0.0F) }
+    var searchByRating by rememberSaveable { mutableFloatStateOf(0.0F) }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -150,13 +153,13 @@ fun StartGameScreen(
             StartScreenCollapsableItem(
                 title = "Radius"
             ) {
-                SearchByRadius { searchRadius -> /* Handle radius search */ }
+                SearchByRadius { searchByRadius = it }
             }
 
             StartScreenCollapsableItem(
                 title = "Rating"
             ) {
-                SearchByStarRating { starRating ->/* Handle rating search */ }
+                SearchByStarRating { searchByRating = it }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
