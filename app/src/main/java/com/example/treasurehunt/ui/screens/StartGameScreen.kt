@@ -74,8 +74,8 @@ fun StartGameScreen(
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
-    var searchByRadius by rememberSaveable { mutableFloatStateOf(0.0F) }
-    var searchByRating by rememberSaveable { mutableFloatStateOf(0.0F) }
+    var searchByRadius by rememberSaveable { mutableFloatStateOf(0.0f) }
+    var searchByRating by rememberSaveable { mutableFloatStateOf(0.0f) }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -152,13 +152,15 @@ fun StartGameScreen(
             verticalArrangement = Arrangement.Top
         ) {
             StartScreenCollapsableItem(
-                title = "Radius"
+                title = "Radius",
+                onVisibilityChanged = { if(!it) { searchByRadius = 0f } }
             ) {
                 SearchByRadius { searchByRadius = it }
             }
 
             StartScreenCollapsableItem(
-                title = "Rating"
+                title = "Rating",
+                onVisibilityChanged = { if(!it) { searchByRating = 0f } }
             ) {
                 SearchByStarRating { searchByRating = it }
             }
@@ -190,6 +192,7 @@ fun StartGameScreen(
 @Composable
 fun StartScreenCollapsableItem(
     title: String,
+    onVisibilityChanged: (Boolean) -> Unit,
     collapsableContent: @Composable () -> Unit,
 ) {
     Column(
@@ -198,6 +201,7 @@ fun StartScreenCollapsableItem(
             .wrapContentHeight()
     ) {
         var isExpanded by remember { mutableStateOf(false) }
+        onVisibilityChanged(isExpanded)
         val rotationX by animateFloatAsState(
             targetValue = if (isExpanded) 180f else 0f,
             animationSpec = tween(durationMillis = 600),
@@ -469,6 +473,7 @@ fun ViewQuestCard() {
 @Composable
 fun ViewSearchCardDropDown() {
     StartScreenCollapsableItem(
-        title = "Test Title"
+        title = "Test Title",
+        onVisibilityChanged = { /* no logic, preview only */ }
     ) { /* no drop down content */}
 }
