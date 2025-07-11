@@ -1,6 +1,7 @@
 package com.example.treasurehunt.ui.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -215,13 +216,7 @@ fun StartScreenCollapsableItem(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
             )
-            Icon(
-                painter = painterResource(R.drawable.checkmark_24dp),
-                contentDescription = "check mark",
-                tint = Color.Green,
-                modifier = Modifier
-                    .padding(start = 20.dp)
-            )
+            SelectionStatusIcon(isExpanded)
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(R.drawable.chevron_up_24),
@@ -423,6 +418,34 @@ fun StarRating(
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun SelectionStatusIcon(
+   isExpanded: Boolean = false
+) {
+    AnimatedContent(
+        targetState = isExpanded,
+        label = "checkmark transition"
+    ) { target ->
+        if (target) {
+            Icon(
+                painter = painterResource(R.drawable.checkmark_24dp),
+                contentDescription = "check mark",
+                tint = Color.Green,
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            )
+        } else {
+            Icon(
+                painter = painterResource(R.drawable.notselected_24dp),
+                contentDescription = "not selected mark",
+                tint = Color.Red,
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            )
         }
     }
 }
