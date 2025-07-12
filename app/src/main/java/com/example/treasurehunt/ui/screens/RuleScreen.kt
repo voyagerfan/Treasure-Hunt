@@ -71,7 +71,7 @@ fun RuleScreen(navController: NavController) {
                         .fillMaxWidth()
                 ) {
                     Button(
-                        onClick = { navController.navigate(route = ScreenList.HOME_SCREEN.name) },
+                        onClick = { navController.navigate(route = ScreenList.START_SCREEN.name) },
                         modifier =
                             Modifier
                                 .wrapContentSize()
