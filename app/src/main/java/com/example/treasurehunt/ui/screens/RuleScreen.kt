@@ -79,7 +79,7 @@ fun RuleScreen(navController: NavController) {
                                 .align(Alignment.CenterHorizontally)
                     ) {
                         Text(
-                            text = stringResource(R.string.Start),
+                            text = stringResource(R.string.StartGame),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
