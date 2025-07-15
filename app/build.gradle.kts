@@ -97,6 +97,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1-Beta")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0-RC2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.23")
     testImplementation("io.mockk:mockk:1.14.4")
