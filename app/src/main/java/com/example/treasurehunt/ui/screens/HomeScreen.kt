@@ -47,6 +47,7 @@ import com.example.treasurehunt.R
 import com.example.treasurehunt.TreasureViewModel
 import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.ui.theme.catamaranFamily
+import com.example.treasurehunt.utils.Response
 import com.example.treasurehunt.utils.graphQLClient
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -278,26 +279,27 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.Center
 
             ) {
-                Text(
-                    text = if(viewModelGreeting.greetings?.isEmpty() == true) {
-                        ""
-                    } else {
-                        viewModelGreeting.greetings.toString()
-                    },
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                )
+                when(val graphQLResponse = viewModelGreeting.greetings) {
+                    is Response.Success -> {
+                        Text(
+                            text = graphQLResponse.data.toString(),
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                        )
+                    }
+                    is Response.Error -> {
+                        Text(
+                            text = graphQLResponse.exception.message.toString(),
+                            fontSize = 20.sp,
+                            color = Color.Black,
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-fun DisplayText(greeting: String) {
-    Text(
-        text = greeting
-    )
-}
 
 @Preview
 @Composable
