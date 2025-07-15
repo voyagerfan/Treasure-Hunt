@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestItem
@@ -68,7 +69,7 @@ class TreasureViewModel @Inject constructor(
     private var timerJob: Job? = null
 
     init {
-        getGreetings()
+        // getGreetings()
     }
 
     fun getCurrentLocation() {
@@ -128,19 +129,9 @@ class TreasureViewModel @Inject constructor(
 
     fun getGreetings() {
         viewModelScope.launch {
-            val fetchedGreetings = apolloClient.fetchGreetings()
-            when {
-                fetchedGreetings.hasErrors() && !fetchedGreetings.data?.greetings.isNullOrEmpty() -> {
-                    // fail partial data gracefully
-                }
-                fetchedGreetings.exception != null -> {
-                   // fail exception gracefully
-                }
-                !fetchedGreetings.hasErrors() -> {
-                    _gameStartScreenState.update {
-                        it.copy(greetings = fetchedGreetings.data?.greetings ?: emptyList())
-                    }
-                }
+            val fetchedGreetings = apolloClient.fetchGreetings().toResponse()
+            _gameStartScreenState.update {
+                it.copy(greetings = fetchedGreetings)
             }
         }
     }
