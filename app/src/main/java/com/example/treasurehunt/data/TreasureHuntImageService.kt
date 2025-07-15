@@ -1,11 +1,12 @@
 package com.example.treasurehunt.data
 
-interface ImageApi {
-    suspend fun fetchImage()
-}
+import android.graphics.Bitmap
+import retrofit2.http.GET
+import retrofit2.http.Query
 
-class TreasureHuntImageService: ImageApi {
-    override suspend fun fetchImage() {
-        TODO("Not yet implemented")
-    }
+interface ImageApi {
+    @GET("/images")
+    suspend fun fetchImage(
+        @Query("imageName") imageName: Bitmap,
+    )
 }

@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
+import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.ui.state.PermissionUiState
@@ -46,7 +47,8 @@ class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
     private val locationRequest: CurrentLocationRequest,
-    private val apolloClient: GraphQLApi
+    private val apolloClient: GraphQLApi,
+    private val imageApi: ImageApi
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
