@@ -15,8 +15,10 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
+import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.ui.state.PermissionUiState
@@ -38,6 +40,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
@@ -46,7 +53,8 @@ class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
     private val locationRequest: CurrentLocationRequest,
-    private val apolloClient: GraphQLApi
+    private val apolloClient: GraphQLApi,
+    private val imageApi: ImageApi
 ): ViewModel() {
 
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
@@ -116,6 +124,18 @@ class TreasureViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    fun uploadImage(filepath: File) {
+        val multipartBodyPart = MultipartBody.Part.createFormData(
+            "uploadImage",
+            filepath.name,
+            filepath.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        )
+        viewModelScope.launch {
+            val finalImage = imageApi.uploadImage(multipartBodyPart)
+            /*TODO: handle image upload response*/
         }
     }
 

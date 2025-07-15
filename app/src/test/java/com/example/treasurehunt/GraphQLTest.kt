@@ -41,6 +41,7 @@ class GraphQLGreetingTest {
             applicationContext = mockk(relaxed = true),
             fusedLocationClient = mockk(relaxed = true),
             locationRequest = mockk(relaxed = true),
+            imageApi =  mockk(relaxed = true),
             apolloClient = mockApi
         )
     }
