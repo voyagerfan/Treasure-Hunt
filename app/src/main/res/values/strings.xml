@@ -45,7 +45,7 @@
     <string name="CompletedScreen">CompletedScreen</string>
     <string name="TotalTime">Final Elapsed Time = </string>
     <string name="AppTitle">Treasure Hunt</string>
-    <string name="Start">Start</string>
+    <string name="StartGame">Start Game</string>
     <string name="Continue">Continue</string>
     <string name="ContinueInstruction">Click Continue for the next Clue</string>
     <string name="NeedHint">Need a hint? Click the Hint button below</string>
