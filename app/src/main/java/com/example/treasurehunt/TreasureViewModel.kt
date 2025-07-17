@@ -15,10 +15,8 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.Image
 import coil3.ImageLoader
-import coil3.imageLoader
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
@@ -26,7 +24,6 @@ import coil3.request.crossfade
 import coil3.request.error
 import coil3.request.placeholder
 import coil3.toBitmap
-import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
@@ -53,7 +50,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
@@ -66,8 +62,7 @@ class TreasureViewModel @Inject constructor(
     private val locationRequest: CurrentLocationRequest,
     private val apolloClient: GraphQLApi,
     private val imageApi: ImageApi
-): ViewModel() {
-
+) : ViewModel() {
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
     val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
 
@@ -118,14 +113,14 @@ class TreasureViewModel @Inject constructor(
                     addFirst(
                         AttemptList(
                             attemptNumber = attemptCount.intValue,
-                            distance = distance,
+                            distance = distance
                         )
                     )
                 }
                 _locationLoadingState.value = Response.Success(data = distance)
             } catch (e: Exception) {
                 logStackTrace(e)
-                when(e) {
+                when (e) {
                     is IllegalStateException -> {
                         _locationLoadingState.value = Response.Error(exception = e)
                     }
@@ -163,7 +158,7 @@ class TreasureViewModel @Inject constructor(
             .target(
                 onStart = { updateQuestImage(it) },
                 onSuccess = { updateQuestImage(it) },
-                onError = { updateQuestImage(it) },
+                onError = { updateQuestImage(it) }
             )
             .build()
 
@@ -172,7 +167,8 @@ class TreasureViewModel @Inject constructor(
                 MemoryCache.Builder()
                     .maxSizePercent(
                         context = applicationContext,
-                        percent = 0.25)
+                        percent = 0.25
+                    )
                     .build()
             }
             .build()
@@ -212,9 +208,7 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun getAttemptCount(): Int {
-        return attemptCount.intValue
-    }
+    fun getAttemptCount(): Int = attemptCount.intValue
 
     fun resetQueue() {
         _currentAttemptQueue.value.clear()

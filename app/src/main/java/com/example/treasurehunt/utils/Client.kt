@@ -16,7 +16,8 @@ object graphQLClient {
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
-            .build())
+            .build()
+        )
         .build()
 
     suspend fun fetchGreetings(): List<GetGreetingQuery.Greeting?>? {

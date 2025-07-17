@@ -9,8 +9,7 @@ interface GraphQLApi {
     suspend fun fetchGreetings(): ApolloResponse<GetGreetingQuery.Data>
 }
 
-class TreasureHuntGraphQLService @Inject constructor(private val apolloClient: ApolloClient): GraphQLApi {
-
+class TreasureHuntGraphQLService @Inject constructor(private val apolloClient: ApolloClient) : GraphQLApi {
     override suspend fun fetchGreetings(): ApolloResponse<GetGreetingQuery.Data> {
         return apolloClient.query(GetGreetingQuery()).execute()
     }
