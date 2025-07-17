@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.example.treasurehunt.R
 import com.example.treasurehunt.TimerScreen
 import com.example.treasurehunt.ui.state.TreasureUiState
@@ -103,7 +104,7 @@ fun EndGameScreen(
             }
 
             Box {
-                val questImage = treasureUIstate.currentQuest?.endGameAssets?.questPicture
+                val questImage = treasureUIstate.completeQuestImage
                 when (questImage) {
                     is QuestImage.Resource -> Image(
                         painter = painterResource(id = questImage.resId),
@@ -112,7 +113,12 @@ fun EndGameScreen(
                             .padding(10.dp)
                             .background(Color.Blue)
                     )
-                    is QuestImage.BitmapImage -> TODO()
+                    is QuestImage.BitmapImage -> {
+                        AsyncImage(
+                            model = questImage.bitmap,
+                            contentDescription = "game completed image"
+                        )
+                    }
                     is QuestImage.Url -> TODO()
                     null -> TODO()
                 }

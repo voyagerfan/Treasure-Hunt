@@ -16,12 +16,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.Image
 import coil3.ImageLoader
 import coil3.imageLoader
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.placeholder
+import coil3.toBitmap
 import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.data.ImageApi
@@ -148,17 +152,19 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun fetchImage(imageId: String) {
+    fun fetchGameCompletedImage(imageId: String) {
         val request = ImageRequest.Builder(applicationContext)
-            .data("$imageServerBaseURL + $imageId")
+            .data("$imageServerBaseURL$imageId")
             .crossfade(true)
             .memoryCachePolicy(CachePolicy.ENABLED)
             .diskCachePolicy(policy = CachePolicy.DISABLED)
-            //.error() -> consider and error image
-            //.placeholder() -> consider a placeholder Image
-            .target { image ->
-                // update the data class that holds the image
-            }
+            .error(R.drawable.congrats_screen)
+            .placeholder(R.drawable.congrats_screen)
+            .target(
+                onStart = { updateQuestImage(it) },
+                onSuccess = { updateQuestImage(it) },
+                onError = { updateQuestImage(it) },
+            )
             .build()
 
         val imageLoader = ImageLoader.Builder(applicationContext)
@@ -170,7 +176,6 @@ class TreasureViewModel @Inject constructor(
                     .build()
             }
             .build()
-
         imageLoader.enqueue(request)
     }
 
@@ -312,6 +317,12 @@ class TreasureViewModel @Inject constructor(
             }
             current = current.cause
             depth++
+        }
+    }
+
+    private fun updateQuestImage(image: Image?) {
+        _uiState.update {
+            it.copy(completeQuestImage = QuestImage.BitmapImage(image!!.toBitmap()))
         }
     }
 
