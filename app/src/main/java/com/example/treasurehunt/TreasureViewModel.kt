@@ -16,7 +16,10 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.ImageLoader
 import coil3.imageLoader
+import coil3.memory.MemoryCache
+import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.apollographql.apollo.api.Operation
@@ -79,6 +82,8 @@ class TreasureViewModel @Inject constructor(
     private val _timer = MutableStateFlow(0)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
+
+    private var imageServerBaseURL = "https://10.0.2.2:9000/images/"
 
     init {
         // getGreetings()
@@ -145,8 +150,10 @@ class TreasureViewModel @Inject constructor(
 
     fun fetchImage(imageId: String) {
         val request = ImageRequest.Builder(applicationContext)
-            .data("https://10.0.2.2:9000/images")
+            .data("$imageServerBaseURL + $imageId")
             .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(policy = CachePolicy.DISABLED)
             //.error() -> consider and error image
             //.placeholder() -> consider a placeholder Image
             .target { image ->
@@ -154,7 +161,16 @@ class TreasureViewModel @Inject constructor(
             }
             .build()
 
-        val imageLoader = applicationContext.imageLoader
+        val imageLoader = ImageLoader.Builder(applicationContext)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(
+                        context = applicationContext,
+                        percent = 0.25)
+                    .build()
+            }
+            .build()
+
         imageLoader.enqueue(request)
     }
 
