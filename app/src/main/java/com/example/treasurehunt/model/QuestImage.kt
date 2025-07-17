@@ -2,6 +2,7 @@ package com.example.treasurehunt.model
 
 import android.graphics.Bitmap
 import androidx.annotation.DrawableRes
+import coil3.target.Target
 
 sealed class QuestImage {
     data class Resource(@DrawableRes val resId: Int) : QuestImage()

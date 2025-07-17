@@ -16,10 +16,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil3.imageLoader
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.apollographql.apollo.api.Operation
 import com.example.treasurehunt.data.GraphQLApi
 import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.ui.state.StartGameState
@@ -137,6 +141,21 @@ class TreasureViewModel @Inject constructor(
             val finalImage = imageApi.uploadImage(multipartBodyPart)
             /*TODO: handle image upload response*/
         }
+    }
+
+    fun fetchImage(imageId: String) {
+        val request = ImageRequest.Builder(applicationContext)
+            .data("https://10.0.2.2:9000/images")
+            .crossfade(true)
+            //.error() -> consider and error image
+            //.placeholder() -> consider a placeholder Image
+            .target { image ->
+                // update the data class that holds the image
+            }
+            .build()
+
+        val imageLoader = applicationContext.imageLoader
+        imageLoader.enqueue(request)
     }
 
     fun updateLoadingStateToIdle() {
