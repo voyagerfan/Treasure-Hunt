@@ -58,7 +58,8 @@ val questList = listOf(
         rating = 3.8,
         endGameAssets = CompletedQuestData(
             questDetail = R.string.ClueDetail1,
-            questPicture = QuestImage.Resource(resId = R.drawable.isleofman)
+            questPicture = QuestImage.Resource(resId = R.drawable.isleofman), // TODO: Remove when ImageService is integrated
+            questImageID = ""
         )
     ),
     QuestItem(
@@ -70,7 +71,8 @@ val questList = listOf(
         rating = 4.3,
         endGameAssets = CompletedQuestData(
             questDetail = R.string.ClueDetail2,
-            questPicture = QuestImage.Resource(resId = R.drawable.lalibela)
+            questPicture = QuestImage.Resource(resId = R.drawable.lalibela), // TODO: Remove when ImageService is integrated
+            questImageID = ""
         )
     )
 )

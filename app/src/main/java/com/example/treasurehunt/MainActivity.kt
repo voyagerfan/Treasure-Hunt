@@ -86,8 +86,8 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
+                            viewModel.fetchGameCompletedImage("test")
                             val locationState by viewModel.locationLoadingState.collectAsState()
-
                             if(treasureUiState.isGameCompleted) { navController.navigate(route = ScreenList.END_GAME_SCREEN.name) }
                             PlayGameScreen(
                                 locationState = locationState,
