@@ -6,7 +6,6 @@ plugins {
     id("com.apollographql.apollo") version "4.2.0"
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
-
 }
 
 apollo {

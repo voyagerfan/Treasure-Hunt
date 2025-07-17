@@ -22,7 +22,6 @@ import kotlin.test.assertContentEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GraphQLGreetingTest {
-
     private val testDispatcher = StandardTestDispatcher()
     private lateinit var greetingsList: List<GetGreetingQuery.Greeting>
     private lateinit var myQueryData: GetGreetingQuery.Data
