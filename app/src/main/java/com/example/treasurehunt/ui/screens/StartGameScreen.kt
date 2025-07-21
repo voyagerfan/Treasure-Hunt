@@ -34,6 +34,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
@@ -75,7 +76,7 @@ fun StartGameScreen(
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
     var searchByRadius by rememberSaveable { mutableFloatStateOf(0.0f) }
-    var searchByRating by rememberSaveable { mutableFloatStateOf(0.0f) }
+    var searchByRating by rememberSaveable { mutableStateOf(Pair(0.0f, 4.0f)) }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -153,16 +154,24 @@ fun StartGameScreen(
         ) {
             StartScreenCollapsableItem(
                 title = "Radius",
-                onVisibilityChanged = { if(!it) { searchByRadius = 0f } }
+                onVisibilityChanged = {
+                    searchByRadius = if(!it) { 0f } else { 20f }
+                }
             ) {
-                SearchByRadius { searchByRadius = it }
+                SearchByRadius(
+                    radiusState = searchByRadius
+                ) { searchByRadius = it }
             }
 
             StartScreenCollapsableItem(
                 title = "Rating",
-                onVisibilityChanged = { if(!it) { searchByRating = 0f } }
+                onVisibilityChanged = {
+                    searchByRating = if(!it) { 0.0f to 0.0f } else { 0.0f to 3.0f }
+                }
             ) {
-                SearchByStarRating { searchByRating = it }
+                SearchByStarRating(
+                    starRatingState = searchByRating
+                ) { searchByRating = it.start to it.endInclusive }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -185,7 +194,7 @@ fun StartGameScreen(
 }
 /**
  *
- * WIP: A child composable that collapsable content
+ * WIP: A child composable that has collapsible content
  *
  * @param collapsableContent The current search query.
  */
@@ -238,6 +247,7 @@ fun StartScreenCollapsableItem(
 
 @Composable
 fun SearchByRadius(
+    radiusState: Float,
     onRadiusSelected: (Float) -> Unit
 ) {
     Column(
@@ -245,11 +255,11 @@ fun SearchByRadius(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var sliderValue by remember { mutableFloatStateOf(0f) }
+        //var sliderValue by remember { mutableFloatStateOf(0f) }
         Slider(
             modifier = Modifier.padding(horizontal = 20.dp),
-            value = sliderValue,
-            onValueChange = { sliderValue = it },
+            value = radiusState,
+            onValueChange = { onRadiusSelected(it) },
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.secondary,
                 activeTrackColor = MaterialTheme.colorScheme.secondary,
@@ -257,34 +267,37 @@ fun SearchByRadius(
             ),
             valueRange = 0f..100f
         )
-        Text(text = "%.1f".format(sliderValue) + "km from current location")
-        onRadiusSelected(sliderValue)
+        Text(text = "%.1f".format(radiusState) + "km from current location")
+        //onRadiusSelected(sliderValue)
     }
 }
 
 @Composable
 fun SearchByStarRating(
-    onStarRatingSelected: (Float) -> Unit
+    starRatingState: Pair<Float, Float>,
+    onStarRatingSelected: (ClosedFloatingPointRange<Float>) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var sliderValue by remember { mutableFloatStateOf(0f) }
-        Slider(
+        val sliderValueRange = starRatingState.first..starRatingState.second
+        RangeSlider(
             modifier = Modifier.padding(horizontal = 20.dp),
-            value = sliderValue,
-            onValueChange = { sliderValue = it },
+            value = sliderValueRange,
+            onValueChange = { range -> onStarRatingSelected(range)},
+            valueRange = 0f..5f,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.secondary,
                 activeTrackColor = MaterialTheme.colorScheme.secondary,
                 inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            valueRange = 0f..5f
+            )
         )
-        Text(text = "Rating: " + "%.1f".format(sliderValue) + " Stars")
-        onStarRatingSelected(sliderValue)
+        Text(text = "Rating: %.1f - %.1f Stars".format(
+            sliderValueRange.start,
+            sliderValueRange.endInclusive
+        ))
     }
 }
 
