@@ -15,8 +15,19 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil3.Image
+import coil3.ImageLoader
+import coil3.memory.MemoryCache
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import coil3.request.error
+import coil3.request.placeholder
+import coil3.toBitmap
 import com.example.treasurehunt.data.GraphQLApi
+import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.ui.state.StartGameState
@@ -37,6 +48,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 @SuppressLint("MissingPermission")
@@ -45,9 +60,9 @@ class TreasureViewModel @Inject constructor(
     @ApplicationContext private val applicationContext: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
     private val locationRequest: CurrentLocationRequest,
-    private val apolloClient: GraphQLApi
-): ViewModel() {
-
+    private val apolloClient: GraphQLApi,
+    private val imageApi: ImageApi
+) : ViewModel() {
     private val _locationLoadingState = MutableStateFlow<Response<Double>>(Response.Idle())
     val locationLoadingState: StateFlow<Response<Double>> = _locationLoadingState.asStateFlow()
 
@@ -67,8 +82,10 @@ class TreasureViewModel @Inject constructor(
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
+    private var imageServerBaseURL = "https://10.0.2.2:9000/images/"
+
     init {
-        getGreetings()
+        // getGreetings()
     }
 
     fun getCurrentLocation() {
@@ -96,14 +113,14 @@ class TreasureViewModel @Inject constructor(
                     addFirst(
                         AttemptList(
                             attemptNumber = attemptCount.intValue,
-                            distance = distance,
+                            distance = distance
                         )
                     )
                 }
                 _locationLoadingState.value = Response.Success(data = distance)
             } catch (e: Exception) {
                 logStackTrace(e)
-                when(e) {
+                when (e) {
                     is IllegalStateException -> {
                         _locationLoadingState.value = Response.Error(exception = e)
                     }
@@ -118,6 +135,46 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
+    fun uploadImage(filepath: File) {
+        val multipartBodyPart = MultipartBody.Part.createFormData(
+            "uploadImage",
+            filepath.name,
+            filepath.asRequestBody("image/jpeg".toMediaTypeOrNull())
+        )
+        viewModelScope.launch {
+            val finalImage = imageApi.uploadImage(multipartBodyPart)
+            /*TODO: handle image upload response*/
+        }
+    }
+
+    fun fetchGameCompletedImage(imageId: String) {
+        val request = ImageRequest.Builder(applicationContext)
+            .data("$imageServerBaseURL$imageId")
+            .crossfade(true)
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(policy = CachePolicy.DISABLED)
+            .error(R.drawable.congrats_screen)
+            .placeholder(R.drawable.congrats_screen)
+            .target(
+                onStart = { updateQuestImage(it) },
+                onSuccess = { updateQuestImage(it) },
+                onError = { updateQuestImage(it) }
+            )
+            .build()
+
+        val imageLoader = ImageLoader.Builder(applicationContext)
+            .memoryCache {
+                MemoryCache.Builder()
+                    .maxSizePercent(
+                        context = applicationContext,
+                        percent = 0.25
+                    )
+                    .build()
+            }
+            .build()
+        imageLoader.enqueue(request)
+    }
+
     fun updateLoadingStateToIdle() {
         _locationLoadingState.value = Response.Idle()
     }
@@ -128,19 +185,9 @@ class TreasureViewModel @Inject constructor(
 
     fun getGreetings() {
         viewModelScope.launch {
-            val fetchedGreetings = apolloClient.fetchGreetings()
-            when {
-                fetchedGreetings.hasErrors() && !fetchedGreetings.data?.greetings.isNullOrEmpty() -> {
-                    // fail partial data gracefully
-                }
-                fetchedGreetings.exception != null -> {
-                   // fail exception gracefully
-                }
-                !fetchedGreetings.hasErrors() -> {
-                    _gameStartScreenState.update {
-                        it.copy(greetings = fetchedGreetings.data?.greetings ?: emptyList())
-                    }
-                }
+            val fetchedGreetings = apolloClient.fetchGreetings().toResponse()
+            _gameStartScreenState.update {
+                it.copy(greetings = fetchedGreetings)
             }
         }
     }
@@ -161,9 +208,7 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun getAttemptCount(): Int {
-        return attemptCount.intValue
-    }
+    fun getAttemptCount(): Int = attemptCount.intValue
 
     fun resetQueue() {
         _currentAttemptQueue.value.clear()
@@ -266,6 +311,12 @@ class TreasureViewModel @Inject constructor(
             }
             current = current.cause
             depth++
+        }
+    }
+
+    private fun updateQuestImage(image: Image?) {
+        _uiState.update {
+            it.copy(completeQuestImage = QuestImage.BitmapImage(image!!.toBitmap()))
         }
     }
 

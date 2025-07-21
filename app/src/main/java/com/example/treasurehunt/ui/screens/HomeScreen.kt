@@ -47,6 +47,7 @@ import com.example.treasurehunt.R
 import com.example.treasurehunt.TreasureViewModel
 import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.ui.theme.catamaranFamily
+import com.example.treasurehunt.utils.Response
 import com.example.treasurehunt.utils.graphQLClient
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,8 +61,6 @@ fun HomeScreen(
     var isClicked by remember { mutableStateOf(false) }
     var allGreetings by remember { mutableStateOf("Loading...") }
     val viewModelGreeting by viewModel.gameStartScreenState.collectAsState()
-
-
     LaunchedEffect(Unit) {
         val result = graphQLClient.fetchGreetings()
         allGreetings = result?.toString() ?: ""
@@ -174,8 +173,7 @@ fun HomeScreen(
                                 isClicked = !isClicked
                                 navController.navigate(route = ScreenList.START_SCREEN.name)
                             }
-
-                    ){
+                    ) {
                         Text(
                             text = "Start Game",
                             fontWeight = FontWeight.Bold,
@@ -189,7 +187,6 @@ fun HomeScreen(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                         )
-
                     }
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -201,7 +198,7 @@ fun HomeScreen(
                                 isClicked = !isClicked
                                 navController.navigate(route = ScreenList.RULE_SCREEN.name)
                             }
-                    ){
+                    ) {
                         Text(
                             text = "Rule List",
                             fontWeight = FontWeight.Bold,
@@ -229,7 +226,7 @@ fun HomeScreen(
                                 isClicked = !isClicked
                                 navController.navigate(route = ScreenList.ACHIEVEMENTS_SCREEN.name)
                             }
-                    ){
+                    ) {
                         Text(
                             text = "Achievements",
                             fontWeight = FontWeight.Bold,
@@ -252,10 +249,9 @@ fun HomeScreen(
                             .size(screenWidth / 2)
                             .clickable {
                                 isClicked = !isClicked
-                                /*TODO: Adding clickable behavior here */
-
+                                // TODO: Adding clickable behavior here
                             }
-                    ){
+                    ) {
                         Text(
                             text = "Solved Quests",
                             fontWeight = FontWeight.Bold,
@@ -272,37 +268,36 @@ fun HomeScreen(
                     }
                 }
             }
-            /* Temporary testing for graphQL output */
+            // Temporary testing for graphQL output
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
-
             ) {
-                Text(
-                    text = if(viewModelGreeting.greetings?.isEmpty() == true) {
-                        ""
-                    } else {
-                        viewModelGreeting.greetings.toString()
-                    },
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                )
+                when (val graphQLResponse = viewModelGreeting.greetings) {
+                    is Response.Success -> {
+                        Text(
+                            text = graphQLResponse.data.toString(),
+                            fontSize = 20.sp,
+                            color = Color.Black
+                        )
+                    }
+                    is Response.Error -> {
+                        Text(
+                            text = graphQLResponse.exception.message.toString(),
+                            fontSize = 20.sp,
+                            color = Color.Black
+                        )
+                    }
+                }
             }
         }
     }
 }
 
-@Composable
-fun DisplayText(greeting: String) {
-    Text(
-        text = greeting
-    )
-}
-
 @Preview
 @Composable
 fun PreviewHomeScreen() {
-    //HomeScreen()
+    // HomeScreen()
 }
 
 /*
@@ -311,4 +306,4 @@ acheivement_image.jpg -> http://www.freepik.com Designed by rawpixel.com
 history_image.png -> http://www.freepik.com Designed by studiogstock / Freepik
 rule_list_image.jpg -> http://www.freepik.com Designed by Kampus
 start_new_mage.jpg -> http://www.freepik.com Designed by macrovector
- */
+*/

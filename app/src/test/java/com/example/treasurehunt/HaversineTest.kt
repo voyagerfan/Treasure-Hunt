@@ -10,7 +10,6 @@ import org.junit.runners.Parameterized
 import kotlin.random.Random
 import org.junit.Assert.*
 
-
 @RunWith(Parameterized::class)
 class HaversineTestParameterized(
     private val destination: Coordinate,
@@ -42,7 +41,7 @@ class HaversineAccuracyParameterizedTest(
     private val destination: Coordinate,
     private val origin: List<Double>,
     private val expectedDistance: Double
-){
+) {
     /**
      * Verifies that the haversine function accuracy at different scales to
      * within +/- 0.03% error of the expected value.
@@ -74,8 +73,8 @@ class HaversineAccuracyParameterizedTest(
 @RunWith(Parameterized::class)
 class HaversineSymmetryParameterizedTest(
     private val destination: Coordinate,
-    private val origin: List<Double>,
-){
+    private val origin: List<Double>
+) {
     /**
      * Verifies that the haversine function is symmetric - swapping the destination
      * and origin data will produce the same result within a tolerance of 0.0001.
@@ -114,7 +113,6 @@ class HaversineSymmetryParameterizedTest(
 }
 
 class HaversineUnitTest {
-
     /**
      * Verifies that the haversine implementation always yields distance >= 0
      */
@@ -157,7 +155,7 @@ class HaversineUnitTest {
                         "destinationLongitude = $destinationLongitude " +
                         "originLatitude = $originLatitude " +
                         "originLongitude = $originLongitude ")
-            } catch(e: IllegalArgumentException) {
+            } catch (e: IllegalArgumentException) {
                 assertTrue(e.message?.contains("out of range", ignoreCase = true) == true)
             }
         }
