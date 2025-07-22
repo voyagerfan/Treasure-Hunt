@@ -25,6 +25,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.treasurehunt.model.Coordinate
 import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.ui.screens.AchievementsScreen
 import com.example.treasurehunt.ui.screens.EndGameScreen
@@ -57,6 +58,7 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val timerValue by viewModel.timer.collectAsState()
                     val treasureUiState by viewModel.uiState.collectAsState()
+                    val startGameState by viewModel.gameStartScreenState.collectAsState()
 
                     NavHost(navController = navController, startDestination = ScreenList.ONBOARDING.name) {
                         composable(route = ScreenList.ONBOARDING.name) {
@@ -79,11 +81,18 @@ class MainActivity : ComponentActivity() {
                         }
                         composable(route = ScreenList.START_SCREEN.name) {
                             StartGameScreen(
-                                onBackArrowPressed = {navController.navigate(route = ScreenList.HOME_SCREEN.name) }
-                            ) { userSelectedQuest ->
-                                viewModel.updateUserQuest(userSelectedQuest)
-                                navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
-                            }
+                                questItemList = startGameState.questList,
+                                onBackArrowPressed = { navController.navigate(route = ScreenList.HOME_SCREEN.name) },
+                                questQuery = { query ->
+                                    val coordinates = Coordinate(latitude = treasureUiState.currentLoc[0], longitude = treasureUiState.currentLoc[1]) // TODO: refactor TreasureUIState to use Coordinate
+                                    val searchParams = query.copy(originCoordinates = coordinates)
+                                    viewModel.getQuestItems(searchParams)
+                                },
+                                questSelected = { userSelectedQuest ->
+                                    viewModel.updateUserQuest(userSelectedQuest)
+                                    navController.navigate(route = ScreenList.PLAY_GAME_SCREEN.name)
+                                }
+                            )
                         }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
                             viewModel.fetchGameCompletedImage("test")

@@ -13,6 +13,10 @@ query GetQuestItems(
         clue
         hint
         rating
+        coordinates {
+            latitude
+            longitude
+        }
         endGameAssets {
             endGameDetail
             endGameImageID

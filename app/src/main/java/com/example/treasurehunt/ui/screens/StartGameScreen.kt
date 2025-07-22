@@ -57,18 +57,26 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.treasurehunt.GetQuestItemsQuery
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.questList
+import com.example.treasurehunt.model.CompletedQuestData
+import com.example.treasurehunt.model.Coordinate
 import com.example.treasurehunt.model.FilterData
 import com.example.treasurehunt.model.QuestItem
+import com.example.treasurehunt.model.QuestItemQueryParams
+import com.example.treasurehunt.ui.state.StartGameState
+import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartGameScreen(
+    questItemList: Response<GetQuestItemsQuery.Data>?,
     onBackArrowPressed: () -> Unit,
-    questSelected: (QuestItem) -> Unit
+    questSelected: (QuestItem) -> Unit,
+    questQuery: (QuestItemQueryParams) -> Unit
 ) {
     val textFieldState = rememberTextFieldState()
     val searchBarState = rememberSearchBarState()
@@ -132,15 +140,43 @@ fun StartGameScreen(
                     /*TODO: query results based on textFieldState.text*/
                     /*TODO: create and add list of quest items for now */
 
-                    LazyColumn {
-                        items(questList) { quest ->
-                            QuestCard(
-                                questItem = quest,
-                                distToDestination = 1000.0,
-                                modifier = Modifier.clickable {
-                                    questSelected(quest)
+                    when(questItemList) {
+                        is Response.Success -> {
+                            LazyColumn {
+                                items(questItemList.data.questItems) { quest ->
+                                    QuestCard(
+                                        questItem = QuestItem(
+                                            title = quest.title,
+                                            description = quest.description,
+                                            clue = quest.clue,
+                                            hint = quest.hint,
+                                            coordinates = Coordinate(
+                                                latitude = quest.coordinates.latitude,
+                                                longitude = quest.coordinates.longitude
+                                            ),
+                                            rating = quest.rating,
+                                            endGameAssets = TODO(),
+                                        ),
+                                        distToDestination = 1000.0,
+                                        modifier = Modifier.clickable {
+                                            questSelected(quest)
+                                        }
+                                    )
                                 }
-                            )
+                            }
+
+                        } else -> {
+                            LazyColumn {
+                                items(questList) { quest ->
+                                    QuestCard(
+                                        questItem = quest,
+                                        distToDestination = 1000.0,
+                                        modifier = Modifier.clickable {
+                                            questSelected(quest)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -209,6 +245,14 @@ fun StartGameScreen(
                     /* Temporarily route to city search
                     * TODO: hook slider value for ratings and radius
                     * */
+                    val currentRatingRange = (filterMap["ratingRange"] as FilterData.RatingRange)
+                    val currentRadius = (filterMap["radius"] as FilterData.Radius)
+                    questQuery(
+                        QuestItemQueryParams(
+                            ratingRange = if(currentRatingRange.isVisible) currentRatingRange.data else null,
+                            radius = if(currentRadius.isVisible) currentRadius.data else null
+                        )
+                    )
                     scope.launch { searchBarState.animateToExpanded() }
                 }
             ) {
