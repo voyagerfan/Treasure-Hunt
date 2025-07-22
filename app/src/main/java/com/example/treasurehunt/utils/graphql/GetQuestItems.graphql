@@ -1,0 +1,21 @@
+query GetQuestItems(
+    $rating: RangeInput,
+    $radius: Double,
+    $originCoordinates: CoordinateInput
+) {
+    questItems(
+        rating: $rating
+        radius: $radius
+        originCoordinates: $originCoordinates
+    ) {
+        title
+        description
+        clue
+        hint
+        rating
+        endGameAssets {
+            endGameDetail
+            endGameImageID
+        }
+    }
+}
