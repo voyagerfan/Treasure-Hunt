@@ -45,12 +45,9 @@ import androidx.compose.material3.TopSearchBar
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -62,8 +59,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.questList
+import com.example.treasurehunt.model.FilterData
 import com.example.treasurehunt.model.QuestItem
 import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,8 +74,12 @@ fun StartGameScreen(
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
-    var searchByRadius by rememberSaveable { mutableFloatStateOf(0.0f) }
-    var searchByRating by rememberSaveable { mutableStateOf(Pair(0.0f, 4.0f)) }
+
+    val filterMap = remember { mutableStateMapOf<String, FilterData>().apply {
+        this["radius"] = FilterData.Radius(isVisible = false, data = 0.0f)
+        this["ratingRange"] = FilterData.RatingRange(isVisible = false, data = 0.0f to 0.0f)
+        }
+    }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -154,24 +157,49 @@ fun StartGameScreen(
         ) {
             StartScreenCollapsableItem(
                 title = "Radius",
-                onVisibilityChanged = {
-                    searchByRadius = if(!it) { 0f } else { 20f }
+                isExpanded = filterMap["radius"]!!.isVisible,
+                onToggle = {
+                    val current = filterMap["radius"] as? FilterData.Radius
+                    if (current != null) {
+                        filterMap["radius"] = current.copy(
+                            isVisible = !current.isVisible,
+                            data = if (!current.isVisible) 20f else 0f
+                        )
+                    }
                 }
             ) {
                 SearchByRadius(
-                    radiusState = searchByRadius
-                ) { searchByRadius = it }
+                    radiusState = (filterMap["radius"] as? FilterData.Radius)?.data ?: 0f
+                ) { newRadius ->
+                    val current = filterMap["radius"] as? FilterData.Radius
+                    if (current != null) {
+                        filterMap["radius"] = current.copy(data = newRadius)
+                    }
+                }
             }
 
             StartScreenCollapsableItem(
                 title = "Rating",
-                onVisibilityChanged = {
-                    searchByRating = if(!it) { 0.0f to 0.0f } else { 0.0f to 3.0f }
+                isExpanded = filterMap["ratingRange"]!!.isVisible,
+                onToggle = {
+                    val current = filterMap["ratingRange"] as? FilterData.RatingRange
+                    if (current != null) {
+                        filterMap["ratingRange"] = current.copy(
+                            isVisible = !current.isVisible,
+                            data = if (!current.isVisible) 0f to 4f else 0f to 0f
+                        )
+                    }
                 }
             ) {
                 SearchByStarRating(
-                    starRatingState = searchByRating
-                ) { searchByRating = it.start to it.endInclusive }
+                    starRatingState = (filterMap["ratingRange"] as? FilterData.RatingRange)?.data
+                        ?: (0f to 0f)
+                ) { newRatingRange ->
+                    val current = filterMap["ratingRange"] as? FilterData.RatingRange
+                    if (current != null) {
+                        filterMap["ratingRange"] = current.copy(data = newRatingRange.start to newRatingRange.endInclusive)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -201,7 +229,8 @@ fun StartGameScreen(
 @Composable
 fun StartScreenCollapsableItem(
     title: String,
-    onVisibilityChanged: (Boolean) -> Unit,
+    isExpanded: Boolean,
+    onToggle: (Boolean) -> Unit,
     collapsableContent: @Composable () -> Unit,
 ) {
     Column(
@@ -209,8 +238,7 @@ fun StartScreenCollapsableItem(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        var isExpanded by remember { mutableStateOf(false) }
-        onVisibilityChanged(isExpanded)
+
         val rotationX by animateFloatAsState(
             targetValue = if (isExpanded) 180f else 0f,
             animationSpec = tween(durationMillis = 600),
@@ -221,7 +249,7 @@ fun StartScreenCollapsableItem(
                 .fillMaxWidth()
                 .height(75.dp)
                 .padding(horizontal = 10.dp)
-                .clickable { isExpanded = !isExpanded },
+                .clickable { onToggle(!isExpanded) },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -481,7 +509,7 @@ fun ViewQuestCard() {
         distToDestination = 1000.0
     )
 }
-
+/*
 @Preview
 @Composable
 fun ViewSearchCardDropDown() {
@@ -489,4 +517,4 @@ fun ViewSearchCardDropDown() {
         title = "Test Title",
         onVisibilityChanged = { /* no logic, preview only */ }
     ) { /* no drop down content */}
-}
+}*/
