@@ -1,3 +1,5 @@
+scalar Double
+
 type Greeting {
   title: String
 
@@ -9,8 +11,50 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 """
 scalar String
 
+type Coordinate {
+  latitude: Double!
+
+  longitude: Double!
+}
+
+type CompletedQuest {
+  endGameDetail: String!
+
+  endGameImageID: String!
+}
+
+type QuestItem {
+  title: String!
+
+  description: String!
+
+  clue: String!
+
+  hint: String!
+
+  coordinates: Coordinate!
+
+  rating: Double!
+
+  endGameAssets: CompletedQuest!
+}
+
+input CoordinateInput {
+  latitude: Double!
+
+  longitude: Double!
+}
+
+input RangeInput {
+  min: Double!
+
+  max: Double!
+}
+
 type Query {
   greetings: [Greeting!]!
+
+  questItems(rating: RangeInput, radius: Double, originCoordinates: CoordinateInput): [QuestItem!]!
 }
 
 """
