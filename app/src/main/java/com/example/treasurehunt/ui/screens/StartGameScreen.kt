@@ -248,9 +248,6 @@ fun StartGameScreen(
 
             Button(
                 onClick = {
-                    /* Temporarily route to city search
-                    * TODO: hook slider value for ratings and radius
-                    * */
                     val currentRatingRange = (filterMap["ratingRange"] as FilterData.RatingRange)
                     val currentRadius = (filterMap["radius"] as FilterData.Radius)
                     questQuery(
