@@ -1,3 +1,5 @@
+scalar Double
+
 type Greeting {
   title: String
 
@@ -9,8 +11,55 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 """
 scalar String
 
+type Coordinate {
+  latitude: Double!
+
+  longitude: Double!
+}
+
+type CompletedQuest {
+  endGameDetail: String!
+
+  endGameImageID: String!
+}
+
+type QuestItem {
+  title: String!
+
+  description: String!
+
+  clue: String!
+
+  hint: String!
+
+  coordinates: Coordinate!
+
+  rating: Float!
+
+  endGameAssets: CompletedQuest!
+}
+
+"""
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
+
+input CoordinateInput {
+  latitude: Double!
+
+  longitude: Double!
+}
+
+input RangeInput {
+  min: Float!
+
+  max: Float!
+}
+
 type Query {
   greetings: [Greeting!]!
+
+  questItems(rating: RangeInput, radius: Float, originCoordinates: CoordinateInput): [QuestItem!]!
 }
 
 """

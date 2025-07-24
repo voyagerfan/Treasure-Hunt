@@ -1,6 +1,7 @@
 package com.example.treasurehunt.ui.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.SearchBarValue
@@ -43,11 +45,9 @@ import androidx.compose.material3.TopSearchBar
 import androidx.compose.material3.rememberSearchBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -57,21 +57,38 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.treasurehunt.GetQuestItemsQuery
 import com.example.treasurehunt.R
 import com.example.treasurehunt.data.questList
+import com.example.treasurehunt.model.CompletedQuestData
+import com.example.treasurehunt.model.Coordinate
+import com.example.treasurehunt.model.FilterData
+import com.example.treasurehunt.model.QuestFinalDetail
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
+import com.example.treasurehunt.model.QuestItemQueryParams
+import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StartGameScreen(
+    questItemList: Response<GetQuestItemsQuery.Data>?,
     onBackArrowPressed: () -> Unit,
-    questSelected: (QuestItem) -> Unit
+    questSelected: (QuestItem) -> Unit,
+    questQuery: (QuestItemQueryParams) -> Unit
 ) {
     val textFieldState = rememberTextFieldState()
     val searchBarState = rememberSearchBarState()
     val scope = rememberCoroutineScope()
     val scrollBehavior = SearchBarDefaults.enterAlwaysSearchBarScrollBehavior()
+
+    val filterMap = remember { mutableStateMapOf<String, FilterData>().apply {
+        this["radius"] = FilterData.Radius(isVisible = false, data = 0.0f)
+        this["ratingRange"] = FilterData.RatingRange(isVisible = false, data = 0.0f to 0.0f)
+        }
+    }
 
     val inputField = @Composable {
         SearchBarDefaults.InputField(
@@ -124,15 +141,48 @@ fun StartGameScreen(
                     /*TODO: query results based on textFieldState.text*/
                     /*TODO: create and add list of quest items for now */
 
-                    LazyColumn {
-                        items(questList) { quest ->
-                            QuestCard(
-                                questItem = quest,
-                                distToDestination = 1000.0,
-                                modifier = Modifier.clickable {
-                                    questSelected(quest)
+                    when(questItemList) {
+                        is Response.Success -> {
+                            LazyColumn {
+                                items(questItemList.data.questItems) { quest ->
+                                    val questItem = QuestItem(
+                                        title = quest.title,
+                                        description = quest.description,
+                                        clue = quest.clue,
+                                        hint = quest.hint,
+                                        coordinates = Coordinate(
+                                            latitude = quest.coordinates.latitude,
+                                            longitude = quest.coordinates.longitude
+                                        ),
+                                        rating = quest.rating,
+                                        endGameAssets = CompletedQuestData(
+                                            questDetail = QuestFinalDetail.FetchedData(quest.endGameAssets.endGameDetail),
+                                            questPicture = QuestImage.Url(imageUrl = quest.endGameAssets.endGameImageID),
+                                        ),
+                                    )
+
+                                    QuestCard(
+                                        questItem = questItem,
+                                        distToDestination = 1000.0,
+                                        modifier = Modifier.clickable {
+                                            questSelected(questItem)
+                                        }
+                                    )
                                 }
-                            )
+                            }
+
+                        } else -> {
+                            LazyColumn {
+                                items(questList) { quest ->
+                                    QuestCard(
+                                        questItem = quest,
+                                        distToDestination = 1000.0,
+                                        modifier = Modifier.clickable {
+                                            questSelected(quest)
+                                        }
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -148,15 +198,50 @@ fun StartGameScreen(
             verticalArrangement = Arrangement.Top
         ) {
             StartScreenCollapsableItem(
-                title = "Radius"
+                title = "Radius",
+                isExpanded = filterMap["radius"]!!.isVisible,
+                onToggle = {
+                    val current = filterMap["radius"] as? FilterData.Radius
+                    if (current != null) {
+                        filterMap["radius"] = current.copy(
+                            isVisible = !current.isVisible,
+                            data = if (!current.isVisible) 20f else 0f
+                        )
+                    }
+                }
             ) {
-                SearchByRadius { searchRadius -> /* Handle radius search */ }
+                SearchByRadius(
+                    radiusState = (filterMap["radius"] as? FilterData.Radius)?.data ?: 0f
+                ) { newRadius ->
+                    val current = filterMap["radius"] as? FilterData.Radius
+                    if (current != null) {
+                        filterMap["radius"] = current.copy(data = newRadius)
+                    }
+                }
             }
 
             StartScreenCollapsableItem(
-                title = "Rating"
+                title = "Rating",
+                isExpanded = filterMap["ratingRange"]!!.isVisible,
+                onToggle = {
+                    val current = filterMap["ratingRange"] as? FilterData.RatingRange
+                    if (current != null) {
+                        filterMap["ratingRange"] = current.copy(
+                            isVisible = !current.isVisible,
+                            data = if (!current.isVisible) 0f to 4f else 0f to 0f
+                        )
+                    }
+                }
             ) {
-                SearchByStarRating { starRating ->/* Handle rating search */ }
+                SearchByStarRating(
+                    starRatingState = (filterMap["ratingRange"] as? FilterData.RatingRange)?.data
+                        ?: (0f to 0f)
+                ) { newRatingRange ->
+                    val current = filterMap["ratingRange"] as? FilterData.RatingRange
+                    if (current != null) {
+                        filterMap["ratingRange"] = current.copy(data = newRatingRange.start to newRatingRange.endInclusive)
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -166,6 +251,14 @@ fun StartGameScreen(
                     /* Temporarily route to city search
                     * TODO: hook slider value for ratings and radius
                     * */
+                    val currentRatingRange = (filterMap["ratingRange"] as FilterData.RatingRange)
+                    val currentRadius = (filterMap["radius"] as FilterData.Radius)
+                    questQuery(
+                        QuestItemQueryParams(
+                            ratingRange = if(currentRatingRange.isVisible) currentRatingRange.data else null,
+                            radius = if(currentRadius.isVisible) currentRadius.data else null
+                        )
+                    )
                     scope.launch { searchBarState.animateToExpanded() }
                 }
             ) {
@@ -179,13 +272,15 @@ fun StartGameScreen(
 }
 /**
  *
- * WIP: A child composable that collapsable content
+ * WIP: A child composable that has collapsible content
  *
  * @param collapsableContent The current search query.
  */
 @Composable
 fun StartScreenCollapsableItem(
     title: String,
+    isExpanded: Boolean,
+    onToggle: (Boolean) -> Unit,
     collapsableContent: @Composable () -> Unit,
 ) {
     Column(
@@ -193,7 +288,7 @@ fun StartScreenCollapsableItem(
             .fillMaxWidth()
             .wrapContentHeight()
     ) {
-        var isExpanded by remember { mutableStateOf(false) }
+
         val rotationX by animateFloatAsState(
             targetValue = if (isExpanded) 180f else 0f,
             animationSpec = tween(durationMillis = 600),
@@ -204,15 +299,15 @@ fun StartScreenCollapsableItem(
                 .fillMaxWidth()
                 .height(75.dp)
                 .padding(horizontal = 10.dp)
-                .clickable { isExpanded = !isExpanded },
+                .clickable { onToggle(!isExpanded) },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-
-                )
+            )
+            SelectionStatusIcon(isExpanded)
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 painter = painterResource(R.drawable.chevron_up_24),
@@ -230,6 +325,7 @@ fun StartScreenCollapsableItem(
 
 @Composable
 fun SearchByRadius(
+    radiusState: Float,
     onRadiusSelected: (Float) -> Unit
 ) {
     Column(
@@ -237,11 +333,10 @@ fun SearchByRadius(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var sliderValue by remember { mutableFloatStateOf(0f) }
         Slider(
             modifier = Modifier.padding(horizontal = 20.dp),
-            value = sliderValue,
-            onValueChange = { sliderValue = it },
+            value = radiusState,
+            onValueChange = { onRadiusSelected(it) },
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.secondary,
                 activeTrackColor = MaterialTheme.colorScheme.secondary,
@@ -249,34 +344,36 @@ fun SearchByRadius(
             ),
             valueRange = 0f..100f
         )
-        Text(text = "%.1f".format(sliderValue) + "km from current location")
-        onRadiusSelected(sliderValue)
+        Text(text = "%.1f".format(radiusState) + "km from current location")
     }
 }
 
 @Composable
 fun SearchByStarRating(
-    onStarRatingSelected: (Float) -> Unit
+    starRatingState: Pair<Float, Float>,
+    onStarRatingSelected: (ClosedFloatingPointRange<Float>) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var sliderValue by remember { mutableFloatStateOf(0f) }
-        Slider(
+        val sliderValueRange = starRatingState.first..starRatingState.second
+        RangeSlider(
             modifier = Modifier.padding(horizontal = 20.dp),
-            value = sliderValue,
-            onValueChange = { sliderValue = it },
+            value = sliderValueRange,
+            onValueChange = { range -> onStarRatingSelected(range)},
+            valueRange = 0f..5f,
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.secondary,
                 activeTrackColor = MaterialTheme.colorScheme.secondary,
                 inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer,
-            ),
-            valueRange = 0f..5f
+            )
         )
-        Text(text = "Rating: " + "%.1f".format(sliderValue) + " Stars")
-        onStarRatingSelected(sliderValue)
+        Text(text = "Rating: %.1f - %.1f Stars".format(
+            sliderValueRange.start,
+            sliderValueRange.endInclusive
+        ))
     }
 }
 
@@ -354,7 +451,7 @@ fun QuestCard(
 
 @Composable
 fun StarRating(
-    rating: Double
+    rating: Float
 ) {
     Row(
         modifier = Modifier
@@ -366,7 +463,7 @@ fun StarRating(
     ) {
         var starFill = rating + 1
         repeat(5) {
-            starFill -= 1.0
+            starFill -= 1.0f
             Log.d("startFill", "$starFill")
             Box(
                 modifier = Modifier
@@ -418,10 +515,38 @@ fun StarRating(
     }
 }
 
+@Composable
+fun SelectionStatusIcon(
+   isExpanded: Boolean = false
+) {
+    AnimatedContent(
+        targetState = isExpanded,
+        label = "checkmark transition"
+    ) { target ->
+        if (target) {
+            Icon(
+                painter = painterResource(R.drawable.checkmark_24dp),
+                contentDescription = "check mark",
+                tint = Color.Green,
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            )
+        } else {
+            Icon(
+                painter = painterResource(R.drawable.notselected_24dp),
+                contentDescription = "not selected mark",
+                tint = Color.Red,
+                modifier = Modifier
+                    .padding(start = 20.dp)
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun TestStartRating() {
-    StarRating(rating = 3.6)
+    StarRating(rating = 3.6f)
 }
 
 @Preview
@@ -432,3 +557,12 @@ fun ViewQuestCard() {
         distToDestination = 1000.0
     )
 }
+/*
+@Preview
+@Composable
+fun ViewSearchCardDropDown() {
+    StartScreenCollapsableItem(
+        title = "Test Title",
+        onVisibilityChanged = { /* no logic, preview only */ }
+    ) { /* no drop down content */}
+}*/

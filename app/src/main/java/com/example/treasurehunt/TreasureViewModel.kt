@@ -15,6 +15,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.Image
 import coil3.ImageLoader
 import coil3.memory.MemoryCache
@@ -29,6 +30,7 @@ import com.example.treasurehunt.data.ImageApi
 import com.example.treasurehunt.model.AttemptList
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
+import com.example.treasurehunt.model.QuestItemQueryParams
 import com.example.treasurehunt.ui.state.PermissionUiState
 import com.example.treasurehunt.ui.state.StartGameState
 import com.example.treasurehunt.ui.state.TreasureUiState
@@ -85,7 +87,7 @@ class TreasureViewModel @Inject constructor(
     private var imageServerBaseURL = "https://10.0.2.2:9000/images/"
 
     init {
-        // getGreetings()
+        getGreetings()
     }
 
     fun getCurrentLocation() {
@@ -188,6 +190,15 @@ class TreasureViewModel @Inject constructor(
             val fetchedGreetings = apolloClient.fetchGreetings().toResponse()
             _gameStartScreenState.update {
                 it.copy(greetings = fetchedGreetings)
+            }
+        }
+    }
+
+    fun getQuestItems(queryVariables: QuestItemQueryParams) {
+        viewModelScope.launch {
+            val fetchedQuestItems = apolloClient.fetchQuestItems(queryVariables).toResponse()
+            _gameStartScreenState.update {
+                it.copy(questList = fetchedQuestItems)
             }
         }
     }

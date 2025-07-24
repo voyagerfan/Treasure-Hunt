@@ -94,14 +94,14 @@ fun EndGameScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
             }
-
+            /*
             treasureUIstate.currentQuest?.endGameAssets?.let {
                 Text(
                     text = stringResource(it.questDetail),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
-            }
+            }*/
 
             Box {
                 val questImage = treasureUIstate.completeQuestImage
