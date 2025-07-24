@@ -87,7 +87,7 @@ class TreasureViewModel @Inject constructor(
     private var imageServerBaseURL = "https://10.0.2.2:9000/images/"
 
     init {
-        // getGreetings()
+        getGreetings()
     }
 
     fun getCurrentLocation() {

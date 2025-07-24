@@ -34,10 +34,15 @@ type QuestItem {
 
   coordinates: Coordinate!
 
-  rating: Double!
+  rating: Float!
 
   endGameAssets: CompletedQuest!
 }
+
+"""
+The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
 
 input CoordinateInput {
   latitude: Double!
@@ -46,15 +51,15 @@ input CoordinateInput {
 }
 
 input RangeInput {
-  min: Double!
+  min: Float!
 
-  max: Double!
+  max: Float!
 }
 
 type Query {
   greetings: [Greeting!]!
 
-  questItems(rating: RangeInput, radius: Double, originCoordinates: CoordinateInput): [QuestItem!]!
+  questItems(rating: RangeInput, radius: Float, originCoordinates: CoordinateInput): [QuestItem!]!
 }
 
 """

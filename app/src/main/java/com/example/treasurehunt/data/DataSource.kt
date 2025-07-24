@@ -12,6 +12,7 @@ import androidx.annotation.StringRes
 import com.example.treasurehunt.R
 import com.example.treasurehunt.model.CompletedQuestData
 import com.example.treasurehunt.model.Coordinate
+import com.example.treasurehunt.model.QuestFinalDetail
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.Rule
@@ -55,11 +56,10 @@ val questList = listOf(
         clue = "Once a year, a fast motorcycle can be found competing on public roads in what is wildy regarded as the most dangerous race in the world. Where is this motorcycle?",
         hint = "The event is held on an island in the Irish sea",
         coordinates = Coordinate(54.1672, -4.4780),
-        rating = 3.8,
+        rating = 3.8f,
         endGameAssets = CompletedQuestData(
-            questDetail = R.string.ClueDetail1,
-            questPicture = QuestImage.Resource(resId = R.drawable.isleofman), // TODO: Remove when ImageService is integrated
-            questImageID = ""
+            questDetail = QuestFinalDetail.OnDeviceData(R.string.ClueDetail1),
+            questPicture = QuestImage.Resource(resId = R.drawable.isleofman)
         )
     ),
     QuestItem(
@@ -68,11 +68,10 @@ val questList = listOf(
         clue = "This rock-hewn church and UNESCO site was built around the 12th century and was of great spiritual importance then and even today. There are 10 more close by. Where is this church?",
         hint = "The oldest human remains known to man share the same country with this church.",
         coordinates = Coordinate(12.0317, 39.0411),
-        rating = 4.3,
+        rating = 4.3f,
         endGameAssets = CompletedQuestData(
-            questDetail = R.string.ClueDetail2,
-            questPicture = QuestImage.Resource(resId = R.drawable.lalibela), // TODO: Remove when ImageService is integrated
-            questImageID = ""
+            questDetail = QuestFinalDetail.OnDeviceData(R.string.ClueDetail2),
+            questPicture = QuestImage.Resource(resId = R.drawable.lalibela)
         )
     )
 )

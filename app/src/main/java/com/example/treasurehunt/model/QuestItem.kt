@@ -6,6 +6,6 @@ data class QuestItem(
     val clue: String,
     val hint: String,
     val coordinates: Coordinate,
-    val rating: Double,
+    val rating: Float,
     val endGameAssets: CompletedQuestData
 )

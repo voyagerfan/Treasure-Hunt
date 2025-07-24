@@ -14,6 +14,8 @@ apollo {
         sourceFolder = "src/main/java/com/example/treasurehunt/utils/graphql"
         srcDir("src/main/java/com/example/treasurehunt/utils/graphql")
         schemaFile = file("src/main/java/com/example/treasurehunt/utils/graphql/schema.graphqls")
+        mapScalar("Double", "kotlin.Double")
+        mapScalar("Float", "kotlin.Float")
     }
 }
 

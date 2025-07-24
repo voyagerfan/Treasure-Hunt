@@ -1,6 +1,6 @@
 query GetQuestItems(
     $rating: RangeInput,
-    $radius: Double,
+    $radius: Float,
     $originCoordinates: CoordinateInput
 ) {
     questItems(

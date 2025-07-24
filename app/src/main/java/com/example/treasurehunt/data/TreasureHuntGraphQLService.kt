@@ -26,7 +26,8 @@ class TreasureHuntGraphQLService @Inject constructor(private val apolloClient: A
         val query = GetQuestItemsQuery(
             radius = Optional.Present(queryParams.radius),
             rating = Optional.Present(
-                RangeInput(min = queryParams.ratingRange!!.first,
+                RangeInput(
+                    min = queryParams.ratingRange!!.first,
                     max = queryParams.ratingRange.second)
             ),
             originCoordinates = Optional.Present(

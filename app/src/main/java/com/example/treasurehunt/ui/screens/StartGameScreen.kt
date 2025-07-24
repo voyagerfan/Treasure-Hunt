@@ -63,9 +63,10 @@ import com.example.treasurehunt.data.questList
 import com.example.treasurehunt.model.CompletedQuestData
 import com.example.treasurehunt.model.Coordinate
 import com.example.treasurehunt.model.FilterData
+import com.example.treasurehunt.model.QuestFinalDetail
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.model.QuestItem
 import com.example.treasurehunt.model.QuestItemQueryParams
-import com.example.treasurehunt.ui.state.StartGameState
 import com.example.treasurehunt.utils.Response
 import kotlinx.coroutines.launch
 
@@ -144,22 +145,27 @@ fun StartGameScreen(
                         is Response.Success -> {
                             LazyColumn {
                                 items(questItemList.data.questItems) { quest ->
-                                    QuestCard(
-                                        questItem = QuestItem(
-                                            title = quest.title,
-                                            description = quest.description,
-                                            clue = quest.clue,
-                                            hint = quest.hint,
-                                            coordinates = Coordinate(
-                                                latitude = quest.coordinates.latitude,
-                                                longitude = quest.coordinates.longitude
-                                            ),
-                                            rating = quest.rating,
-                                            endGameAssets = TODO(),
+                                    val questItem = QuestItem(
+                                        title = quest.title,
+                                        description = quest.description,
+                                        clue = quest.clue,
+                                        hint = quest.hint,
+                                        coordinates = Coordinate(
+                                            latitude = quest.coordinates.latitude,
+                                            longitude = quest.coordinates.longitude
                                         ),
+                                        rating = quest.rating,
+                                        endGameAssets = CompletedQuestData(
+                                            questDetail = QuestFinalDetail.FetchedData(quest.endGameAssets.endGameDetail),
+                                            questPicture = QuestImage.Url(imageUrl = quest.endGameAssets.endGameImageID),
+                                        ),
+                                    )
+
+                                    QuestCard(
+                                        questItem = questItem,
                                         distToDestination = 1000.0,
                                         modifier = Modifier.clickable {
-                                            questSelected(quest)
+                                            questSelected(questItem)
                                         }
                                     )
                                 }
@@ -327,7 +333,6 @@ fun SearchByRadius(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //var sliderValue by remember { mutableFloatStateOf(0f) }
         Slider(
             modifier = Modifier.padding(horizontal = 20.dp),
             value = radiusState,
@@ -340,7 +345,6 @@ fun SearchByRadius(
             valueRange = 0f..100f
         )
         Text(text = "%.1f".format(radiusState) + "km from current location")
-        //onRadiusSelected(sliderValue)
     }
 }
 
@@ -447,7 +451,7 @@ fun QuestCard(
 
 @Composable
 fun StarRating(
-    rating: Double
+    rating: Float
 ) {
     Row(
         modifier = Modifier
@@ -459,7 +463,7 @@ fun StarRating(
     ) {
         var starFill = rating + 1
         repeat(5) {
-            starFill -= 1.0
+            starFill -= 1.0f
             Log.d("startFill", "$starFill")
             Box(
                 modifier = Modifier
@@ -542,7 +546,7 @@ fun SelectionStatusIcon(
 @Preview
 @Composable
 fun TestStartRating() {
-    StarRating(rating = 3.6)
+    StarRating(rating = 3.6f)
 }
 
 @Preview
