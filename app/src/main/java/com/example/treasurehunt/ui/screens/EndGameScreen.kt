@@ -1,5 +1,6 @@
 package com.example.treasurehunt.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +35,7 @@ import com.example.treasurehunt.R
 import com.example.treasurehunt.TimerScreen
 import com.example.treasurehunt.ui.state.TreasureUiState
 import com.example.treasurehunt.data.questList
+import com.example.treasurehunt.model.QuestFinalDetail
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
 
@@ -94,14 +97,18 @@ fun EndGameScreen(
                     style = MaterialTheme.typography.titleLarge
                 )
             }
-            /*
+
             treasureUIstate.currentQuest?.endGameAssets?.let {
                 Text(
-                    text = stringResource(it.questDetail),
+                    text = when(val finalDetail = it.questDetail) {
+                        is QuestFinalDetail.FetchedData -> finalDetail.questDetail
+                        is QuestFinalDetail.OnDeviceData -> stringResource(finalDetail.questDetail)
+                        null -> "Great Work!"
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(horizontal = 10.dp)
                 )
-            }*/
+            }
 
             Box {
                 val questImage = treasureUIstate.completeQuestImage
