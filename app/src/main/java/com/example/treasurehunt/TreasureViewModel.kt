@@ -15,7 +15,6 @@ import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.Image
 import coil3.ImageLoader
 import coil3.memory.MemoryCache
@@ -84,7 +83,8 @@ class TreasureViewModel @Inject constructor(
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
 
-    private var imageServerBaseURL = "https://10.0.2.2:9000/images/"
+    private var imageServerBaseURL = "http://10.0.2.2:9000/images?imageName="
+    private var lastImageId: String? = null
 
     init {
         getGreetings()
@@ -149,32 +149,41 @@ class TreasureViewModel @Inject constructor(
         }
     }
 
-    fun fetchGameCompletedImage(imageId: String) {
-        val request = ImageRequest.Builder(applicationContext)
-            .data("$imageServerBaseURL$imageId")
-            .crossfade(true)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .diskCachePolicy(policy = CachePolicy.DISABLED)
-            .error(R.drawable.congrats_screen)
-            .placeholder(R.drawable.congrats_screen)
-            .target(
-                onStart = { updateQuestImage(it) },
-                onSuccess = { updateQuestImage(it) },
-                onError = { updateQuestImage(it) }
-            )
-            .build()
-
-        val imageLoader = ImageLoader.Builder(applicationContext)
-            .memoryCache {
-                MemoryCache.Builder()
-                    .maxSizePercent(
-                        context = applicationContext,
-                        percent = 0.25
+    fun fetchGameCompletedImage(imageId: QuestImage?) {
+        when(imageId) {
+            is QuestImage.Url -> {
+                if (imageId.imageUrl == lastImageId) return
+                lastImageId = imageId.imageUrl
+                val request = ImageRequest.Builder(applicationContext)
+                    .data("$imageServerBaseURL${imageId.imageUrl}")
+                    .crossfade(true)
+                    .memoryCachePolicy(CachePolicy.ENABLED)
+                    .diskCachePolicy(policy = CachePolicy.DISABLED)
+                    .error(R.drawable.congrats_screen)
+                    .placeholder(R.drawable.congrats_screen)
+                    .target(
+                        onStart = { updateQuestImage(it) },
+                        onSuccess = { updateQuestImage(it) },
+                        onError = { updateQuestImage(it) }
                     )
                     .build()
+
+                val imageLoader = ImageLoader.Builder(applicationContext)
+                    .memoryCache {
+                        MemoryCache.Builder()
+                            .maxSizePercent(
+                                context = applicationContext,
+                                percent = 0.25
+                            )
+                            .build()
+                    }
+                    .build()
+                imageLoader.enqueue(request)
             }
-            .build()
-        imageLoader.enqueue(request)
+            else -> {
+                Log.d("FetchImage status:","Image No ImageID supplied")
+            }
+        }
     }
 
     fun updateLoadingStateToIdle() {

@@ -9,6 +9,7 @@ CS492
 package com.example.treasurehunt
 
 import android.Manifest
+import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,6 +18,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.treasurehunt.model.Coordinate
+import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.ui.ScreenList
 import com.example.treasurehunt.ui.screens.AchievementsScreen
 import com.example.treasurehunt.ui.screens.EndGameScreen
@@ -95,7 +98,12 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(route = ScreenList.PLAY_GAME_SCREEN.name) {
-                            viewModel.fetchGameCompletedImage("test")
+                            val imageUrl = (treasureUiState.currentQuest?.endGameAssets?.questPicture as? QuestImage.Url)?.imageUrl
+                            LaunchedEffect(imageUrl) {
+                                imageUrl?.let {
+                                    viewModel.fetchGameCompletedImage(QuestImage.Url(it))
+                                }
+                            }
                             val locationState by viewModel.locationLoadingState.collectAsState()
                             if(treasureUiState.isGameCompleted) { navController.navigate(route = ScreenList.END_GAME_SCREEN.name) }
                             PlayGameScreen(

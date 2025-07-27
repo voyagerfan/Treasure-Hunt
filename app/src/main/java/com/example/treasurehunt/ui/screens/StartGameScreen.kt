@@ -461,7 +461,6 @@ fun StarRating(
         var starFill = rating + 1
         repeat(5) {
             starFill -= 1.0f
-            Log.d("startFill", "$starFill")
             Box(
                 modifier = Modifier
                     .wrapContentHeight()
