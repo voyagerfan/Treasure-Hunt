@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -26,6 +27,7 @@ import androidx.compose.runtime.traceEventEnd
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +40,7 @@ import com.example.treasurehunt.data.questList
 import com.example.treasurehunt.model.QuestFinalDetail
 import com.example.treasurehunt.model.QuestImage
 import com.example.treasurehunt.ui.theme.TreasureHuntTheme
+import com.example.treasurehunt.utils.AppUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,12 +121,15 @@ fun EndGameScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .padding(10.dp)
-                            .background(Color.Blue)
                     )
                     is QuestImage.BitmapImage -> {
                         AsyncImage(
                             model = questImage.bitmap,
-                            contentDescription = "game completed image"
+                            contentScale = ContentScale.FillWidth,
+                            contentDescription = "game completed image",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .aspectRatio(AppUtils.getBitmapAspectRatio(questImage.bitmap))
                         )
                     }
                     is QuestImage.Url -> TODO()

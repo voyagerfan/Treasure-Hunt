@@ -1,5 +1,6 @@
 package com.example.treasurehunt.utils
 
+import android.graphics.Bitmap
 import com.example.treasurehunt.model.Coordinate
 
 object AppUtils {
@@ -25,5 +26,13 @@ object AppUtils {
         ) * Math.cos(originLat) * Math.cos(destinationLat)
         val c = 2 * Math.asin(Math.sqrt(a))
         return Math.round(earthRadiusKm * c * 1000).toDouble() / 1000
+    }
+
+    fun getBitmapAspectRatio(image: Bitmap): Float {
+        return if (image.height != 0) {
+            image.width.toFloat()/image.height.toFloat()
+        } else {
+            1f
+        }
     }
 }
